@@ -58,11 +58,19 @@
 			dirLight.shadowDarkness = 0.35;
 
 			var derivation = PROCEDURAL.calculateLSystemDerivation(
-				8,
+				11,
 				"FA",
 			  {
-					"A":"^FB///B/////B",
-					"B":"[^^F//////AL]"
+					"A": [
+						{"odds": "0.80", "successor": "^FB///B/////B"},
+						{"odds": "0.10", "successor": "^FB\\\\B///B"},
+						{"odds": "0.05", "successor": "^FB/B"},
+						{"odds": "0.05", "successor": "^B"}
+					],
+					"B": [
+					  {"odds": "0.75", "successor": "[^^F//////AL]"},
+						{"odds": "0.25", "successor": "[^^&F\\\\\\AL]"}
+					]
 				}
 			);
 
@@ -71,9 +79,11 @@
 					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
 						'angle': 0.15*Math.PI,
 						'length': 2,
-						'depthSizeRatio': 0.85,
+						'depthSizeRatio': 0.95,
 						'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
-						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } )
+						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
+						'angleVariation': 0.30,
+						'sizeVariation': 0.25
 						});
 					tree.position.y = -5;
 
