@@ -1,5 +1,5 @@
-Proceedural Generated Content for WebGL
-=======================================
+Procedurally Generated Content for WebGL
+========================================
 
 Trees
 -----
