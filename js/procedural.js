@@ -30,19 +30,15 @@ PROCEDURAL.calculateLSystemDerivation = function(n, axiom, rules) {
  * leafMaterial - THREE.Material use to render leaves
  */
 PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
-  parameters = parameters || {};
+  var defaultBranchMaterial = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
+  var defaultLeafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
 
-  var angle = parameters.angle !== undefined ? parameters.angle : Math.PI/10;
+  parameters = parameters || {};
+  var angle = parameters.angle !== undefined ? parameters.angle : 0.1*Math.PI;
   var length = parameters.length !== undefined ? parameters.length : 3;
   var depthSizeRatio = parameters.depthSizeRatio !== undefined ? parameters.depthSizeRatio : 0.90;
-
-  var defaultBranchMaterial = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
   var branchMaterial = parameters.branchMaterial !== undefined ? parameters.branchMaterial : defaultBranchMaterial;
-
-  var defaultLeafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
   var leafMaterial = parameters.leafMaterial !== undefined ? parameters.leafMaterial : defaultLeafMaterial;
-
-  var root = new THREE.Object3D();
 
   var pitchCW = new THREE.Quaternion();
   pitchCW.setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle);
@@ -64,6 +60,7 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
 
   var reverse = new THREE.Quaternion(180, 180, 0, 1);
 
+  var root = new THREE.Object3D();
   var stack = []; // elements are {"position": <Vector3>, "rotation": <Quaternion> }
   var current = {
     "position": new THREE.Vector3(0, 0, 0),

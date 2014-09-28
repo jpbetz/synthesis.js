@@ -64,7 +64,13 @@
 					"B":"[^^F//////AL]"
 				}
 			);
-			var tree = PROCEDURAL.interpretLSystemDerivation(derivation, { 'angle': 0.15*Math.PI });
+			var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
+				'angle': 0.15*Math.PI,
+				'length': 2,
+				'depthSizeRatio': 0.85,
+				'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
+				'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } )
+				});
 			tree.position.y = -15;
 			scene.add(tree);
 
