@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<script src="js/three.min.js"></script>
-		<script src="js/TrackballControls.js"></script>
+		<script src="js/OrbitControls.js"></script>
 		<script src="js/procedural.js"></script>
 
 		<script>
@@ -14,18 +14,19 @@
 			var renderer = new THREE.WebGLRenderer();
 
 			function render() {
+				controls.update();
 				renderer.render(scene, camera);
 			}
 
 			function animate() {
 				requestAnimationFrame(animate);
-				controls.update();
+				render();
 			}
 
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
 
-			camera.position.add(new THREE.Vector3(20, 20, 20));
+			camera.position.add(new THREE.Vector3(30, 10, 40));
 
 			// LIGHTS
 			hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -57,37 +58,42 @@
 			dirLight.shadowDarkness = 0.35;
 
 			var derivation = PROCEDURAL.calculateLSystemDerivation(
-				11,
+				8,
 				"FA",
 			  {
 					"A":"^FB///B/////B",
 					"B":"[^^F//////AL]"
 				}
 			);
-			var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
-				'angle': 0.15*Math.PI,
-				'length': 2,
-				'depthSizeRatio': 0.85,
-				'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
-				'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } )
-				});
-			tree.position.y = -15;
-			scene.add(tree);
 
-			var controls = new THREE.TrackballControls(camera);
-			controls.rotateSpeed = 1.0;
-			controls.zoomSpeed = 1.2;
-			controls.panSpeed = 0.8;
+			for(var i = 0; i < 2; i++) {
+				for (var j = 0; j < 2; j++) {
+					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
+						'angle': 0.15*Math.PI,
+						'length': 2,
+						'depthSizeRatio': 0.85,
+						'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
+						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } )
+						});
+					tree.position.y = -5;
 
-			controls.noZoom = false;
-			controls.noPan = false;
+					tree.position.x = i*30-15;
+					tree.position.z = j*30-15;
+					scene.add(tree);
+				}
+			}
 
-			controls.staticMoving = true;
-			controls.dynamicDampingFactor = 0.3;
+			var groundGeometry = new THREE.BoxGeometry( 60, 10, 60 );
+			var groundMaterial = new THREE.MeshPhongMaterial( { ambient: 0xe8e8ff, color: 0xe8e8ff, specular: 0x050505 } );
+			var ground = new THREE.Mesh(groundGeometry, groundMaterial);
+			ground.position.y = -10;
+			scene.add(ground);
 
-			controls.keys = [65, 83, 68];
-
-			controls.addEventListener('change', render);
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
+			controls.userPan = false;
+			controls.userPanSpeed = 0.0;
+			controls.maxDistance = 5000.0;
+			controls.maxPolarAngle = Math.PI * 0.495;
 
 			render();
 			animate();
