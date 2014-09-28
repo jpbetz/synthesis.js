@@ -34,9 +34,6 @@
 				var angle = Math.PI/10;
 				var length = 3;
 
-				var cylinderOffset = new THREE.Vector3(0,length/2,0);
-				var fowardVector = new THREE.Vector3(0,length,0);
-
 				var pitchCW = new THREE.Quaternion();
 				pitchCW.setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle);
 
@@ -60,33 +57,31 @@
 				var stack = []; // elements are {"position": <Vector3>, "rotation": <Quaternion> }
 				var current = {
 					"position": new THREE.Vector3(0, 0, 0),
-					"rotation": new THREE.Quaternion(0, 0, 0, 1)
+					"rotation": new THREE.Quaternion(0, 0, 0, 1),
+					"size": 1
 				};
 
 				for(var i = 0; i < derivation.length; i++) {
 					var c = derivation.charAt(i)
 					switch(c) {
 						case 'F':
-
-							var geometry = new THREE.CylinderGeometry(0.25, 0.25, length, 16);
-
+							var geometry = new THREE.CylinderGeometry(0.3*current.size, 0.3*current.size, length*current.size, 16);
 							var material = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
-							//var material = new THREE.MeshBasicMaterial( {color: 0xffaa66} );
 							var cylinder = new THREE.Mesh(geometry, material);
-							cylinder.position.add(cylinderOffset);
+							cylinder.position.add(new THREE.Vector3(0,length*current.size/2,0));
 							var branch = new THREE.Object3D();
 							branch.add(cylinder);
 
 							branch.position.add(current.position);
 							branch.quaternion.multiply(current.rotation);
 							scene.add(branch);
-							current.position.add(fowardVector.clone().applyQuaternion(current.rotation));
+							var forward = new THREE.Vector3(0,length*current.size,0);
+							current.position.add(forward.applyQuaternion(current.rotation));
 							break;
 						case 'L':
 							if(derivation.charAt(i-1) != ']') {
-								var geometry = new THREE.SphereGeometry(1, 16, 16);
+								var geometry = new THREE.SphereGeometry(current.size, 16, 16);
 								var material = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
-								//var material = new THREE.MeshBasicMaterial( {color: 0x33cc33} );
 								var sphere = new THREE.Mesh(geometry, material);
 								var leaf = new THREE.Object3D();
 								leaf.add(sphere);
@@ -97,7 +92,11 @@
 							}
 							break;
 						case '[':
-							stack.push( { "position": current.position.clone(), "rotation": current.rotation.clone() } );
+							stack.push({
+								"position": current.position.clone(),
+								"rotation": current.rotation.clone(),
+								"size": current.size * 0.90
+							});
 							break;
 						case ']':
 							current = stack.pop();
