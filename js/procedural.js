@@ -21,12 +21,26 @@ PROCEDURAL.calculateLSystemDerivation = function(n, axiom, rules) {
   return successor;
 };
 
-PROCEDURAL.interpretLSystemDerivation = function(derivation) {
-  var angle = Math.PI/10;
-  var length = 3;
-  var depthSizeRatio = 0.90;
-  var branchMaterial = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
-  var leafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
+/**
+ * Parameters:
+ * angle - angle of rotation for angle changing operation: pitch, roll, yaw
+ * length - length of branches
+ * depthSizeRatio - relative size of each depth of rendered object w/r/t the previous depth,  e.g. 0.95 would result in each depth being 5% smaller
+ * branchMaterial - THREE.Material use to render branches
+ * leafMaterial - THREE.Material use to render leaves
+ */
+PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
+  parameters = parameters || {};
+
+  var angle = parameters.angle !== undefined ? parameters.angle : Math.PI/10;
+  var length = parameters.length !== undefined ? parameters.length : 3;
+  var depthSizeRatio = parameters.depthSizeRatio !== undefined ? parameters.depthSizeRatio : 0.90;
+
+  var defaultBranchMaterial = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
+  var branchMaterial = parameters.branchMaterial !== undefined ? parameters.branchMaterial : defaultBranchMaterial;
+
+  var defaultLeafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
+  var leafMaterial = parameters.leafMaterial !== undefined ? parameters.leafMaterial : defaultLeafMaterial;
 
   var root = new THREE.Object3D();
 
