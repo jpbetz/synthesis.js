@@ -57,25 +57,30 @@
 			dirLight.shadowBias = -0.0001;
 			dirLight.shadowDarkness = 0.35;
 
-			var derivation = PROCEDURAL.calculateLSystemDerivation(
-				11,
-				"FA",
-			  {
-					"A": [
-						{"odds": "0.80", "successor": "^FB///B/////B"},
-						{"odds": "0.10", "successor": "^FB\\\\B///B"},
-						{"odds": "0.05", "successor": "^FB/B"},
-						{"odds": "0.05", "successor": "^B"}
-					],
-					"B": [
-					  {"odds": "0.75", "successor": "[^^F//////AL]"},
-						{"odds": "0.25", "successor": "[^^&F\\\\\\AL]"}
-					]
-				}
-			);
+			var axiom = "FA";
+			var rules = {
+				"A": [
+					{"odds": "0.80", "successor": "^FB///B/////B"},
+					{"odds": "0.10", "successor": "^FB\\\\B///B"},
+					{"odds": "0.05", "successor": "^FB/B"},
+					{"odds": "0.05", "successor": "^B"}
+				],
+				"B": [
+				  {"odds": "0.75", "successor": "[^^F//////AL]"},
+					{"odds": "0.25", "successor": "[^^&F\\\\\\AL]"}
+				]
+			}
 
-			for(var i = 0; i < 1; i++) {
-				for (var j = 0; j < 1; j++) {
+			var rows = 2;
+			var columns = 4;
+			var spacing = 20;
+			var minDepth = 7;
+			var maxDepth = 10;
+
+			for(var i = 0; i < rows; i++) {
+				for (var j = 0; j < columns; j++) {
+					var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
+					var derivation = PROCEDURAL.calculateLSystemDerivation(depth, axiom, rules);
 					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
 						'branchAngle': 0.14*Math.PI,
 						'branchLength': 2.6,
@@ -89,14 +94,14 @@
 						});
 					tree.position.y = -5;
 
-					tree.position.x = i*30-15;
-					tree.position.z = j*30-30;
+					tree.position.x = i*spacing - (rows*spacing/2);
+					tree.position.z = j*spacing - (columns*spacing/2);
 					scene.add(tree);
 				}
 			}
 
 			var groundGeometry = new THREE.BoxGeometry( 500, 10, 500 );
-			var groundMaterial = new THREE.MeshPhongMaterial( { ambient: 0xe8e8ff, color: 0xe8e8ff, specular: 0x050505 } );
+			var groundMaterial = new THREE.MeshPhongMaterial( { ambient: 0x1f1f1f, color: 0x1f1f1f, specular: 0x050505 } );
 			var ground = new THREE.Mesh(groundGeometry, groundMaterial);
 			ground.position.y = -10;
 			scene.add(ground);

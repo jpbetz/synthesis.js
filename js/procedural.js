@@ -83,7 +83,13 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
 
         branchMesh.position.add(new THREE.Vector3(0, current.branchLength/2, 0));
         var branch = new THREE.Object3D();
+
         branch.add(branchMesh);
+
+        var axisGeometry = new THREE.SphereGeometry(current.branchThickness, 16, 16);
+        var axisMesh = new THREE.Mesh(axisGeometry, branchMaterial);
+
+        branch.add(axisMesh);
 
         branch.position.add(current.position);
         branch.quaternion.multiply(current.rotation);
