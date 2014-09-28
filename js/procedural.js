@@ -59,6 +59,7 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
   var leafMaterial = parameters.leafMaterial !== undefined ? parameters.leafMaterial : defaultLeafMaterial;
   var angleVariation = parameters.angleVariation !== undefined ? parameters.angleVariation : 0.50;
   var sizeVariation = parameters.sizeVariation !== undefined ? parameters.sizeVariation : 0.25;
+  var sidesPerMesh = parameters.sidesPerMesh !== undefined ? parameters.sidesPerMesh : 16;
 
   var root = new THREE.Object3D();
   root.rotation.y = Math.random()*Math.PI*2;
@@ -78,7 +79,7 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
     switch(c) {
       case 'F':
         var nextBranchThickness = current.branchThickness*depthSizeRatio - Math.random()*(current.branchThickness*sizeVariation);
-        var branchGeometry = new THREE.CylinderGeometry(nextBranchThickness, current.branchThickness, current.branchLength, 16);
+        var branchGeometry = new THREE.CylinderGeometry(nextBranchThickness, current.branchThickness, current.branchLength, sidesPerMesh);
         var branchMesh = new THREE.Mesh(branchGeometry, branchMaterial);
 
         branchMesh.position.add(new THREE.Vector3(0, current.branchLength/2, 0));
@@ -86,7 +87,7 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
 
         branch.add(branchMesh);
 
-        var axisGeometry = new THREE.SphereGeometry(current.branchThickness, 16, 16);
+        var axisGeometry = new THREE.SphereGeometry(current.branchThickness, sidesPerMesh, sidesPerMesh);
         var axisMesh = new THREE.Mesh(axisGeometry, branchMaterial);
 
         branch.add(axisMesh);
@@ -105,7 +106,7 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
         break;
       case 'L':
         if(derivation.charAt(i-1) != ']') {
-          var leafGeometry = new THREE.SphereGeometry(current.leafSize, 16, 16);
+          var leafGeometry = new THREE.SphereGeometry(current.leafSize, sidesPerMesh, sidesPerMesh);
           var leafMesh = new THREE.Mesh(leafGeometry, leafMaterial);
 
           var leaf = new THREE.Object3D();

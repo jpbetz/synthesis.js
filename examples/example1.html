@@ -71,32 +71,30 @@
 				]
 			}
 
-			var rows = 2;
-			var columns = 4;
+			var trees = 15;
 			var spacing = 20;
-			var minDepth = 7;
-			var maxDepth = 10;
+			var minDepth = 6;
+			var maxDepth = 11;
 
-			for(var i = 0; i < rows; i++) {
-				for (var j = 0; j < columns; j++) {
-					var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
-					var derivation = PROCEDURAL.calculateLSystemDerivation(depth, axiom, rules);
-					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
-						'branchAngle': 0.14*Math.PI*(depth/maxDepth),
-						'branchLength': 2.6*(depth/maxDepth),
-						'branchThickness': 0.6*(depth/maxDepth),
-						'leafSize': 2.5*(depth/maxDepth),
-						'depthSizeRatio': 0.96,
-						'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
-						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
-						'angleVariation': 0.30,
-						'sizeVariation': 0.10
-						});
-					tree.position.y = 0;
-					tree.position.x = i*spacing - (rows*spacing/2);
-					tree.position.z = j*spacing - (columns*spacing/2);
-					scene.add(tree);
-				}
+			for(var i = 0; i < trees; i++) {
+				var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
+				var derivation = PROCEDURAL.calculateLSystemDerivation(depth, axiom, rules);
+				var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
+					'branchAngle': 0.14*Math.PI*(depth/maxDepth),
+					'branchLength': 2.6*(depth/maxDepth),
+					'branchThickness': 0.6*(depth/maxDepth),
+					'leafSize': 2.5*(depth/maxDepth),
+					'depthSizeRatio': 0.96,
+					'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
+					'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
+					'angleVariation': 0.30,
+					'sizeVariation': 0.10,
+					'sidesPerMesh': 8
+					});
+				tree.position.y = 0;
+				tree.position.x = (Math.random()-0.5)*spacing*Math.sqrt(trees);
+				tree.position.z = (Math.random()-0.5)*spacing*Math.sqrt(trees);
+				scene.add(tree);
 			}
 
 			var groundGeometry = new THREE.BoxGeometry( 500, 10, 500 );
