@@ -1,0 +1,164 @@
+<html>
+	<head>
+		<title>Tree Generator</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+	</head>
+	<body>
+		<script src="js/three.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script>
+		  var calculateLSystemDerivation = function(n, axiom, rules) {
+			  var predecessor = axiom;
+			  var successor;
+			  for(var i = 0; i < n; i++) {
+			    successor = "";
+			    for (var pos = 0; pos < predecessor.length; pos++) {
+			        var c = predecessor.charAt(pos);
+			        if(c in rules) {
+			            successor += rules[c];
+			        } else {
+			            // it's a convention in l-systems to
+			            // pass-thru symbols without production
+			            // rules (sorta like having an implied identity
+			            // production rule).
+			            successor += c;
+			        }
+			    }
+			    predecessor = successor;
+			  }
+			  return successor;
+			};
+
+			var interpretLSystemDerivation = function(derivation, scene) {
+				var angle = Math.PI/10;
+				var length = 3;
+
+				var cylinderOffset = new THREE.Vector3(0,length/2,0);
+				var fowardVector = new THREE.Vector3(0,length,0);
+
+				var pitchCW = new THREE.Quaternion();
+				pitchCW.setFromAxisAngle(new THREE.Vector3(1, 0, 0), angle);
+
+				var pitchCCW = new THREE.Quaternion();
+				pitchCCW.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), angle);
+
+				var rollCW = new THREE.Quaternion();
+				rollCW.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+
+				var rollCCW = new THREE.Quaternion();
+				rollCCW.setFromAxisAngle(new THREE.Vector3(0, -1, 0), angle);
+
+				var yawCW = new THREE.Quaternion();
+				yawCW.setFromAxisAngle(new THREE.Vector3(0, 0, 1), angle);
+
+				var yawCCW = new THREE.Quaternion();
+				yawCCW.setFromAxisAngle(new THREE.Vector3(0, 0, -1), angle);
+
+				var reverse = new THREE.Quaternion(180, 180, 0, 1);
+
+				var stack = []; // elements are {"position": <Vector3>, "rotation": <Quaternion> }
+				var current = {
+					"position": new THREE.Vector3(0, 0, 0),
+					"rotation": new THREE.Quaternion(0, 0, 0, 1)
+				};
+
+				for(var i = 0; i < derivation.length; i++) {
+					var c = derivation.charAt(i)
+					switch(c) {
+						case 'F':
+
+							var geometry = new THREE.CylinderGeometry(0.25, 0.25, length, 16);
+							var material = new THREE.MeshBasicMaterial( {color: 0xffaa66} );
+							var cylinder = new THREE.Mesh(geometry, material);
+							cylinder.position.add(cylinderOffset);
+							var branch = new THREE.Object3D();
+							branch.add(cylinder);
+
+							branch.position.add(current.position);
+							//branch.quaternion.multiply(current.rotation);
+							branch.quaternion.multiply(current.rotation);
+							branch.quaternion.normalize();
+							scene.add(branch);
+							current.position.add(fowardVector.clone().applyQuaternion(current.rotation));
+							break;
+						case 'L':
+							// TODO: draw a leaf
+							break;
+						case '[':
+							stack.push( { "position": current.position.clone(), "rotation": current.rotation.clone() } );
+							break;
+						case ']':
+							current = stack.pop();
+							break;
+						case '&':
+							current.rotation = current.rotation.multiply(pitchCW);
+							break;
+						case '^':
+							current.rotation = current.rotation.multiply(pitchCCW);
+							break;
+						case '+':
+							current.rotation = current.rotation.multiply(yawCW);
+							break;
+						case '-':
+							current.rotation = current.rotation.multiply(yawCCW);
+							break;
+						case '\\':
+							current.rotation = current.rotation.multiply(rollCW);
+							break;
+						case '/':
+							current.rotation = current.rotation.multiply(rollCCW);
+							break;
+						case '|':
+							current.rotation = current.rotation.multiply(reverse);
+							break;
+					}
+				}
+			}
+
+			function render() {
+				renderer.render( scene, camera );
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				controls.update();
+			}
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 1000);
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			//camera.position.z = 30;
+			camera.position.add(new THREE.Vector3(0, 0, 100));
+
+			interpretLSystemDerivation(calculateLSystemDerivation(
+				7,
+				"FA",
+			  {
+					"A":"^FB///B/////B",
+					"B":"[^^F//////AL]"
+				}),
+			scene);
+
+			var controls = new THREE.TrackballControls( camera );
+			controls.rotateSpeed = 1.0;
+			controls.zoomSpeed = 1.2;
+			controls.panSpeed = 0.8;
+
+			controls.noZoom = false;
+			controls.noPan = false;
+
+			controls.staticMoving = true;
+			controls.dynamicDampingFactor = 0.3;
+
+			controls.keys = [ 65, 83, 68 ];
+
+			controls.addEventListener( 'change', render );
+
+			render();
+			animate();
+		</script>
+	</body>
+</html>
