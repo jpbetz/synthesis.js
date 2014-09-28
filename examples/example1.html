@@ -82,18 +82,17 @@
 					var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
 					var derivation = PROCEDURAL.calculateLSystemDerivation(depth, axiom, rules);
 					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
-						'branchAngle': 0.14*Math.PI,
-						'branchLength': 2.6,
-						'branchThickness': 0.6,
-						'leafSize': 2.5,
+						'branchAngle': 0.14*Math.PI*(depth/maxDepth),
+						'branchLength': 2.6*(depth/maxDepth),
+						'branchThickness': 0.6*(depth/maxDepth),
+						'leafSize': 2.5*(depth/maxDepth),
 						'depthSizeRatio': 0.96,
 						'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
 						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
 						'angleVariation': 0.30,
 						'sizeVariation': 0.10
 						});
-					tree.position.y = -5;
-
+					tree.position.y = 0;
 					tree.position.x = i*spacing - (rows*spacing/2);
 					tree.position.z = j*spacing - (columns*spacing/2);
 					scene.add(tree);
@@ -103,7 +102,7 @@
 			var groundGeometry = new THREE.BoxGeometry( 500, 10, 500 );
 			var groundMaterial = new THREE.MeshPhongMaterial( { ambient: 0x1f1f1f, color: 0x1f1f1f, specular: 0x050505 } );
 			var ground = new THREE.Mesh(groundGeometry, groundMaterial);
-			ground.position.y = -10;
+			ground.position.y = -5;
 			scene.add(ground);
 
 			controls = new THREE.OrbitControls(camera, renderer.domElement);
