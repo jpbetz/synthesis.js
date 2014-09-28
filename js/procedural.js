@@ -50,13 +50,13 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
   var defaultLeafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
 
   parameters = parameters || {};
-  var angle = parameters.angle !== undefined ? parameters.angle : 0.1*Math.PI;
-  var length = parameters.length !== undefined ? parameters.length : 3;
-  var thickness = parameters.thickness !== undefined ? parameters.thickness : 3;
+  var branchAngle = parameters.branchAngle !== undefined ? parameters.branchAngle : 0.1*Math.PI;
+  var branchLength = parameters.branchLength !== undefined ? parameters.branchLength : 3;
+  var branchThickness = parameters.branchThickness !== undefined ? parameters.branchThickness : 0.3;
+  var leafSize = parameters.leafSize !== undefined ? parameters.leafSize : 0.3;
   var depthSizeRatio = parameters.depthSizeRatio !== undefined ? parameters.depthSizeRatio : 0.90;
   var branchMaterial = parameters.branchMaterial !== undefined ? parameters.branchMaterial : defaultBranchMaterial;
   var leafMaterial = parameters.leafMaterial !== undefined ? parameters.leafMaterial : defaultLeafMaterial;
-
   var angleVariation = parameters.angleVariation !== undefined ? parameters.angleVariation : 0.50;
   var sizeVariation = parameters.sizeVariation !== undefined ? parameters.sizeVariation : 0.25;
 
@@ -67,31 +67,39 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
   var current = {
     "position": new THREE.Vector3(0, 0, 0),
     "rotation": new THREE.Quaternion(0, 0, 0, 1),
-    "size": 1
+    "branchLength": branchLength,
+    "branchThickness": branchThickness,
+    "branchAngle": branchAngle,
+    "leafSize": leafSize
   };
 
   for(var i = 0; i < derivation.length; i++) {
-    var c = derivation.charAt(i)
-    var stepAngle = angle + (Math.random()-0.5)*(angle*angleVariation);
-    var stepSize = current.size + (Math.random()-1)*(current.size*sizeVariation);
+    var c = derivation.charAt(i);
     switch(c) {
       case 'F':
-        var branchGeometry = new THREE.CylinderGeometry(0.3*stepSize, 0.3*stepSize, length*stepSize, 16);
+        var nextBranchThickness = current.branchThickness*depthSizeRatio - Math.random()*(current.branchThickness*sizeVariation);
+        var branchGeometry = new THREE.CylinderGeometry(nextBranchThickness, current.branchThickness, current.branchLength, 16);
         var branchMesh = new THREE.Mesh(branchGeometry, branchMaterial);
 
-        branchMesh.position.add(new THREE.Vector3(0,length*stepSize/2,0));
+        branchMesh.position.add(new THREE.Vector3(0, current.branchLength/2, 0));
         var branch = new THREE.Object3D();
         branch.add(branchMesh);
 
         branch.position.add(current.position);
         branch.quaternion.multiply(current.rotation);
         root.add(branch);
-        var forward = new THREE.Vector3(0,length*stepSize,0);
+        var forward = new THREE.Vector3(0, current.branchLength, 0);
         current.position.add(forward.applyQuaternion(current.rotation));
+
+        current.branchLength = current.branchLength*depthSizeRatio - Math.random()*(current.branchLength*sizeVariation);
+        current.branchThickness = nextBranchThickness;
+        current.branchAngle = current.branchAngle + (Math.random()-0.5)*(current.branchAngle*angleVariation);
+        current.leafSize = current.leafSize*depthSizeRatio - Math.random()*(current.leafSize*sizeVariation);
+
         break;
       case 'L':
         if(derivation.charAt(i-1) != ']') {
-          var leafGeometry = new THREE.SphereGeometry(stepSize, 16, 16);
+          var leafGeometry = new THREE.SphereGeometry(current.leafSize, 16, 16);
           var leafMesh = new THREE.Mesh(leafGeometry, leafMaterial);
 
           var leaf = new THREE.Object3D();
@@ -106,7 +114,10 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
         stack.push({
           "position": current.position.clone(),
           "rotation": current.rotation.clone(),
-          "size": stepSize * depthSizeRatio
+          "branchLength": current.branchLength,
+          "branchThickness": current.branchThickness,
+          "branchAngle": current.branchAngle,
+          "leafSize": current.leafSize
         });
         break;
       case ']':
@@ -114,32 +125,32 @@ PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
         break;
       case '&':
         var pitchCW = new THREE.Quaternion();
-        pitchCW.setFromAxisAngle(new THREE.Vector3(1, 0, 0), stepAngle);
+        pitchCW.setFromAxisAngle(new THREE.Vector3(1, 0, 0), current.branchAngle);
         current.rotation = current.rotation.multiply(pitchCW);
         break;
       case '^':
         var pitchCCW = new THREE.Quaternion();
-        pitchCCW.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), stepAngle);
+        pitchCCW.setFromAxisAngle(new THREE.Vector3(-1, 0, 0), current.branchAngle);
         current.rotation = current.rotation.multiply(pitchCCW);
         break;
       case '+':
         var yawCW = new THREE.Quaternion();
-        yawCW.setFromAxisAngle(new THREE.Vector3(0, 0, 1), stepAngle);
+        yawCW.setFromAxisAngle(new THREE.Vector3(0, 0, 1), current.branchAngle);
         current.rotation = current.rotation.multiply(yawCW);
         break;
       case '-':
         var yawCCW = new THREE.Quaternion();
-        yawCCW.setFromAxisAngle(new THREE.Vector3(0, 0, -1), stepAngle);
+        yawCCW.setFromAxisAngle(new THREE.Vector3(0, 0, -1), current.branchAngle);
         current.rotation = current.rotation.multiply(yawCCW);
         break;
       case '\\':
         var rollCW = new THREE.Quaternion();
-        rollCW.setFromAxisAngle(new THREE.Vector3(0, 1, 0), stepAngle);
+        rollCW.setFromAxisAngle(new THREE.Vector3(0, 1, 0), current.branchAngle);
         current.rotation = current.rotation.multiply(rollCW);
         break;
       case '/':
         var rollCCW = new THREE.Quaternion();
-        rollCCW.setFromAxisAngle(new THREE.Vector3(0, -1, 0), stepAngle);
+        rollCCW.setFromAxisAngle(new THREE.Vector3(0, -1, 0), current.branchAngle);
         current.rotation = current.rotation.multiply(rollCCW);
         break;
       case '|':

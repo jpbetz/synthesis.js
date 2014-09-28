@@ -4,9 +4,9 @@
 		<style>canvas { width: 100%; height: 100% }</style>
 	</head>
 	<body>
-		<script src="js/three.min.js"></script>
-		<script src="js/OrbitControls.js"></script>
-		<script src="js/procedural.js"></script>
+		<script src="../js/three.min.js"></script>
+		<script src="../js/OrbitControls.js"></script>
+		<script src="../js/procedural.js"></script>
 
 		<script>
 			var scene = new THREE.Scene();
@@ -74,26 +74,28 @@
 				}
 			);
 
-			for(var i = 0; i < 2; i++) {
+			for(var i = 0; i < 4; i++) {
 				for (var j = 0; j < 2; j++) {
 					var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
-						'angle': 0.15*Math.PI,
-						'length': 2,
-						'depthSizeRatio': 0.95,
+						'branchAngle': 0.14*Math.PI,
+						'branchLength': 2.6,
+						'branchThickness': 0.6,
+						'leafSize': 2.5,
+						'depthSizeRatio': 0.96,
 						'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
 						'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
 						'angleVariation': 0.30,
-						'sizeVariation': 0.25
+						'sizeVariation': 0.10
 						});
 					tree.position.y = -5;
 
 					tree.position.x = i*30-15;
-					tree.position.z = j*30-15;
+					tree.position.z = j*30-30;
 					scene.add(tree);
 				}
 			}
 
-			var groundGeometry = new THREE.BoxGeometry( 60, 10, 60 );
+			var groundGeometry = new THREE.BoxGeometry( 500, 10, 500 );
 			var groundMaterial = new THREE.MeshPhongMaterial( { ambient: 0xe8e8ff, color: 0xe8e8ff, specular: 0x050505 } );
 			var ground = new THREE.Mesh(groundGeometry, groundMaterial);
 			ground.position.y = -10;
