@@ -1,0 +1,7 @@
+GradientPoint = function() {
+
+};
+
+GradientPoint.prototype = {
+
+};

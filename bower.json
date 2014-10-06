@@ -1,0 +1,33 @@
+{
+  "name": "procedural.js",
+  "version": "0.0.1",
+  "homepage": "http://https://github.com/jpbetz/procedural.js",
+  "description": "A procedurally generated content library for WebGL and three.js",
+  "main": "build/procedural.min.js",
+  "dependencies": {
+    "threejs": "*"
+  },
+  "keywords": [
+    "procedural",
+    "proceduraljs",
+    "procedural.js",
+    "3D",
+    "generated",
+    "content",
+    "lsystem",
+    "l-systems",
+    "noise",
+    "random"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "build",
+    "speed",
+    "test",
+    "*.md",
+    "AUTHORS.txt",
+    "Gruntfile.js",
+    "package.json"
+  ]
+}
