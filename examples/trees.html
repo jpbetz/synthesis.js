@@ -5,8 +5,9 @@
 	</head>
 	<body>
 		<script src="../js/three.min.js"></script>
-		<script src="../js/OrbitControls.js"></script>
 		<script src="../js/procedural.js"></script>
+		
+		<script src="js/OrbitControls.js"></script>
 
 		<script>
 			var scene = new THREE.Scene();
@@ -78,8 +79,8 @@
 
 			for(var i = 0; i < trees; i++) {
 				var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
-				var derivation = PROCEDURAL.calculateLSystemDerivation(depth, axiom, rules);
-				var tree = PROCEDURAL.interpretLSystemDerivation(derivation, {
+				var derivation = LSystem.derive(depth, axiom, rules);
+				var tree = LSystem.interpret(derivation, {
 					'branchAngle': 0.14*Math.PI*(depth/maxDepth),
 					'branchLength': 2.6*(depth/maxDepth),
 					'branchThickness': 0.6*(depth/maxDepth),

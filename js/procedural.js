@@ -1,5 +1,13 @@
-var PROCEDURAL = {};
-PROCEDURAL.calculateLSystemDerivation = function(n, axiom, rules) {
+/**
+ * '[' - push
+ * ']' - pop
+ * '&', '^' - pitch (clockwise, counter-clockwise)
+ * '+', '-' - yaw (clockwise, counter-clockwise)
+ * '\', '/' - roll (clockwise, counter-clockwise)
+ * '|' - reverse
+ */
+var LSystem = {};
+LSystem.derive = function(n, axiom, rules) {
   var predecessor = axiom;
   var successor;
   for(var i = 0; i < n; i++) {
@@ -45,7 +53,7 @@ PROCEDURAL.calculateLSystemDerivation = function(n, axiom, rules) {
  * branchMaterial - THREE.Material use to render branches
  * leafMaterial - THREE.Material use to render leaves
  */
-PROCEDURAL.interpretLSystemDerivation = function(derivation, parameters) {
+LSystem.interpret = function(derivation, parameters) {
   var defaultBranchMaterial = new THREE.MeshPhongMaterial( { ambient: 0xffaa66, color: 0xffaa66, specular: 0x050505 } );
   var defaultLeafMaterial = new THREE.MeshPhongMaterial( { ambient: 0x33cc33, color: 0x33cc33, specular: 0x050505 } );
 
