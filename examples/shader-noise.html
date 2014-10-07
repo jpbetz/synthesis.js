@@ -302,7 +302,7 @@ void main()
       ]);
 
       var noiseMaterial = new ShaderNoiseMaterial(100, 100, { gradient: gradient, octaves: 8 });
-      var noiseGeometry = new THREE.PlaneGeometry(10, 10);
+      var noiseGeometry = new THREE.SphereGeometry(10, 32, 32);
       var noiseMesh = new THREE.Mesh(noiseGeometry, noiseMaterial);
 
       scene.add(noiseMesh);
