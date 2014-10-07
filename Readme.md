@@ -64,7 +64,6 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
-* [ ] Add tests for l-system
 * [ ] Generate only a skeleton from l-systems, find a way for them to be skinned in a general way
 * [ ] make symbols that can be used in l-systems extensible, so alternatives to the leaf can be added
 * [ ] Remove cylinder and sphere shapes (or at least the sphere leaf shape)
