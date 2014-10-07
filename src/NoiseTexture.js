@@ -35,7 +35,7 @@ NoiseTexture.prototype = Object.create( THREE.DataTexture.prototype );
 
 NoiseTexture.prototype.clone = function () {
 
-	var texture = new NoiseTexture();
+	var texture = new NoiseTexture(width, height, params);
 
 	THREE.DataTexture.prototype.clone.call( this, texture );
 

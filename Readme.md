@@ -64,12 +64,12 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
+* [ ] Add cubemap noise texture support
 * [ ] Generate only a skeleton from l-systems, find a way for them to be skinned in a general way
 * [ ] make symbols that can be used in l-systems extensible, so alternatives to the leaf can be added
 * [ ] Remove cylinder and sphere shapes (or at least the sphere leaf shape)
       from the l-system code,  introduce a class that can be used in it's place.
       The class should be parametric.
-* [ ] Build noise material geneartor, support linear and spherical systems
 * [ ] non-visual procedural applications, e.g. NPG-AI
 
 Building

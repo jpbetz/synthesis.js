@@ -39,6 +39,21 @@ module.exports = function(grunt) {
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'qunit']
+    },
+    staticinline: {
+      main: {
+        options: {
+          prefix: '@{',
+          suffix: '}@',
+          vars: {
+            'noise3Dglsl_vertex': '<%= grunt.file.read("src/shaders/noise3D_vertex.glsl") %>',
+            'noise3Dglsl_fragment': '<%= grunt.file.read("src/shaders/noise3D_fragment.glsl") %>'
+          }
+        },
+        files: {
+          'examples/shader-noise.html': 'examples/templates/shader-noise-template.html'
+        }
+      }
     }
   });
 
@@ -47,9 +62,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-static-inline');
 
   grunt.registerTask('test', ['jshint', 'qunit']);
 
-  grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'staticinline', 'qunit', 'concat', 'uglify']);
 
 };
