@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Tree Generator</title>
+    <style>canvas { width: 100%; height: 100% }</style>
+  </head>
+  <body>
+    <script src="../bower_components/threejs/build/three.min.js"></script>
+    <script src="../dist/procedural.min.js"></script>
+    <div>
+      <canvas id="noiseExample1" width="100" height="80"></canvas>
+    </div>
+    <script>
+    var canvas = document.getElementById("noiseExample1");
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+    var ctx = canvas.getContext("2d");
+    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+      var noise = new Simplex();
+      for(var x = 0; x < 100; x++) {
+        for(var y = 0; y < 100; y++) {
+          var index = (x + y * canvasWidth) * 4;
+
+          var value = noise.getOctaveNoise(x/10, y/10, 1, 8) * 255;
+          canvasData.data[index + 0] = value; // r
+          canvasData.data[index + 1] = value; // g
+          canvasData.data[index + 2] = value; // b
+          canvasData.data[index + 3] = 255; // a
+        }
+      }
+      ctx.putImageData(canvasData, 0, 0);
+
+    </script>
+  </body>
+</html>
