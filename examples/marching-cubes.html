@@ -61,10 +61,8 @@
       var material = new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } );
       var mesh = new MarchingCubes(64, material, false, false);
       var simplex = new Simplex();
-      mesh.addField(function(x,y,z) { return simplex.getOctaveNoise(x/10,y/10,z/10,3); }, 20, 1 );
+      mesh.addField(function(x,y,z) { return simplex.getOctaveNoise(x/20,y/20,z/20,3); }, 20, 1 );
       mesh.addGradientY(160, 40);
-      //mesh.addBall(0.5, 0.75, 0.5, 1, 0)
-      //mesh.addBall(0.5, 0.75, 0.75, 1, 0)
 
       scene.add(mesh);
 

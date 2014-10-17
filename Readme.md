@@ -9,6 +9,7 @@ Core:
 * Random - random distribution utilities
 * Noise - consistent noise generation,  e.g. terrain
 * L-System - self-similar structures, e.g. trees, plants
+* Marching Cubes - polygonizes density functions
 * Color - coordinated colors, e.g. gradients, palettes
 * Skeletons (planned)
 
