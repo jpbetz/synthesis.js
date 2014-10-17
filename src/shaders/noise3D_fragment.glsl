@@ -111,5 +111,7 @@ void main()
   n += 0.03125 * snoise(uvw * 32.0);
   n = n*100.0;
 
+  // TODO: how to layer this over a base shader, e.g. phong?
+
   gl_FragColor = vec4(vec3(0.0, 1.0-n, n), 1.0);
 }

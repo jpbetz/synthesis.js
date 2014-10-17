@@ -9,9 +9,6 @@
 
     <script src="js/OrbitControls.js"></script>
 
-    <script src="../src/shaders/noise3D_fragment.glsl" id="noise3D_vertex" type="x-shader/x-vertex">@{noise3Dglsl_vertex}@</script>
-    <script src="../src/shaders/noise3D_vertex.glsl" id="noise3D_fragment" type="x-shader/x-fragment">@{noise3Dglsl_fragment}@</script>
-
     <script>
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(20, window.innerWidth/window.innerHeight, 1, 1000);
@@ -30,7 +27,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      camera.position.add(new THREE.Vector3(30, 10, 40));
+      camera.position.add(new THREE.Vector3(5, 5, 10));
 
       // LIGHTS
       hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -61,16 +58,15 @@
       dirLight.shadowBias = -0.0001;
       dirLight.shadowDarkness = 0.35;
 
-      var gradient = new Gradient([
-        {x: 0, color: new THREE.Color(0.5,0.5,1)},
-        {x: 1, color: new THREE.Color(0.5,1,0.5)}
-      ]);
+      var material = new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } );
+      var mesh = new MarchingCubes(64, material, false, false);
+      var simplex = new Simplex();
+      mesh.addField(function(x,y,z) { return simplex.getOctaveNoise(x/10,y/10,z/10,3); }, 20, 1 );
+      mesh.addGradientY(160, 40);
+      //mesh.addBall(0.5, 0.75, 0.5, 1, 0)
+      //mesh.addBall(0.5, 0.75, 0.75, 1, 0)
 
-      var noiseMaterial = new ShaderNoiseMaterial(100, 100, { gradient: gradient, octaves: 8 });
-      var noiseGeometry = new THREE.SphereGeometry(5, 32, 32);
-      var noiseMesh = new THREE.Mesh(noiseGeometry, noiseMaterial);
-
-      scene.add(noiseMesh);
+      scene.add(mesh);
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.userPan = false;

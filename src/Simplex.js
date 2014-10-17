@@ -66,7 +66,13 @@ Simplex.prototype = {
 
   fastfloor: function(x) {
     //return Math.floor(x);
-    return x | 0; // see http://stackoverflow.com/questions/2526682/why-is-javascripts-math-floor-the-slowest-way-to-calculate-floor-in-javascript
+
+    // see:
+    // http://stackoverflow.com/questions/2526682/why-is-javascripts-math-floor-the-slowest-way-to-calculate-floor-in-javascript
+    // http://stackoverflow.com/questions/7487977/using-bitwise-or-0-to-floor-a-number
+
+    // this is actually a truncation, not a true round,  and would be wrong for negative numbers
+    return x | 0;
   },
 
   dot: function(g, x, y, z) {
