@@ -9,18 +9,13 @@ Core:
 * Random - random distribution utilities
 * Noise - consistent noise generation,  e.g. terrain
 * L-System - self-similar structures, e.g. trees, plants
-* Marching Cubes - polygonizes density functions
+* Marching Cubes - meshes from scalar fields, e.g. caves, coral reefs
 * Color - coordinated colors, e.g. gradients, palettes
 * Skeletons (planned)
 
-Materials:
-
-* Procedural Noise materials
-* Procedural Color materials
-
 Animations:
 
-(planned)
+TODO
 
 Application libraries:
 
@@ -35,14 +30,14 @@ Features:
 Purpose
 -------
 
-Applications of procedurally generated content tend to use a fairly small but
+Applications of procedurally generated content designed to use a fairly small but
 flexible set of core utilities.
 
 Many applications of procedurally generated content use a combination of
 hand authored artwork, rules and mechanics in combination with generated content.
 
 Noise
--------
+-----
 
 TODO: add simplex
 

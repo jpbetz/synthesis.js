@@ -24,7 +24,7 @@ MarchingCubes = function ( resolution, material, enableUvs, enableColors ) {
 
 		// parameters
 
-		this.isolation = 80.0;
+		this.isolation = 0.5;
 
 		// size of field, 32 is pushing it in Javascript :)
 
