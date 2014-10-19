@@ -32,11 +32,7 @@ ShaderNoiseMaterial = function(width, height, params) {
 ShaderNoiseMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 ShaderNoiseMaterial.prototype.clone = function () {
-
   var texture = new ShaderNoiseMaterial(width, height, params);
-
   THREE.ShaderMaterial.prototype.clone.call( this, texture );
-
   return texture;
-
 };

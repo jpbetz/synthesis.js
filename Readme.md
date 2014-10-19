@@ -1,51 +1,64 @@
 procedural.js
 =============
 
+Overview
+--------
+
 A procedurally generated content library for [WebGL](http://en.wikipedia.org/wiki/WebGL)
 and [three.js](http://threejs.org/).
 
 Core:
 
-* Random - random distribution utilities
-* Noise - consistent noise generation,  e.g. terrain
-* L-System - self-similar structures, e.g. trees, plants
+* Randomness - random distribution utilities (uniform, gaussian, power law)
+* Consistent Noise - consistent noise algorithms,  e.g. terrain
+* L-Systems - self-similar structures, e.g. trees, plants
 * Marching Cubes - meshes from scalar fields, e.g. caves, coral reefs
 * Color - coordinated colors, e.g. gradients, palettes
 * Skeletons (planned)
-
-Animations:
-
-TODO
 
 Application libraries:
 
 * Trees
 * Terrain (Flat, Spherical)
-* Water
+* Water (planned)
 
-Features:
-* All generation is parametric, allowing for desired parameters to be constrained
-  by the caller
+Design goals:
+
+* Provide consistent APIs to core procedural utilities in the style of three.js.
+
+* Composition - Should be easy to build up new applications of procedurally generated content
+  by composing the core utilities in this library in new and unique ways.
+
+* Convenient parameterization - allow for some parameters to be constrained to ranges, distributions
+  or exact values, with reasonable defaults for unconstrained parameters
+
+* Visual Appeal - Coordinated colors and modern graphics lighting and camera techniques should
+  be enabled by default.
+
 
 Purpose
 -------
 
-Applications of procedurally generated content designed to use a fairly small but
-flexible set of core utilities.
+Make it easy to prototype procedural content generation ideas by making it easy
+to compose together core generation utilities with 3d rendering.
 
-Many applications of procedurally generated content use a combination of
-hand authored artwork, rules and mechanics in combination with generated content.
 
-Noise
------
+Core utilities
+==============
 
-TODO: add simplex
+Consistent Noise
+----------------
+
+Simplex provides a consistent noise source.  Pick a random starting coordinate to randomize.
 
 L-System
 --------
 
 Generates random trees using a stochastic L-System and renders them using
 WebGL and three.js.
+
+Marching Cubes
+--------------
 
 Color
 -----
@@ -60,8 +73,13 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
-* [ ] Add cubemap noise texture support
-* [ ] Generate only a skeleton from l-systems, find a way for them to be skinned in a general way
+* [ ] Add random coordinated color palette generator ()
+* [ ] Add random distributions (https://www.tylerlhobbs.com/writings/probability-distributions-for-artists)
+* [ ] Add Markov Chains
+
+* [ ] Fix marching cubes so all parameters can be passed in, have good defaults
+* [ ] Add vertex smoothing/removal routine for marching cubes.
+* [ ] Generate only a skeleton from l-systems, find a way for them to be skinned in a general way (via vertex shader?)
 * [ ] make symbols that can be used in l-systems extensible, so alternatives to the leaf can be added
 * [ ] Remove cylinder and sphere shapes (or at least the sphere leaf shape)
       from the l-system code,  introduce a class that can be used in it's place.

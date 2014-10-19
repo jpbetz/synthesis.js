@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <title>Random</title>
+    <style>canvas { width: 100%; height: 100% }</style>
+  </head>
+  <body style="margin: 0; text-align:justify;">
+    <script src="../bower_components/threejs/build/three.min.js"></script>
+    <script src="../dist/procedural.min.js"></script>
+    <script src="../lib/random.js"></script>
+    <div>
+      Uniform:
+      <br>
+      <canvas id="random-uniform" width="500" height="80" style="width:500; height:80;"></canvas>
+      <br>
+      <canvas id="random-uniform-2d" width="500" height="500" style="width:500; height:500;"></canvas>
+      <br>
+      Normal:
+      <br>
+      <canvas id="random-normal" width="500" height="80" style="width:500; height:80;"></canvas>
+      <br>
+      <canvas id="random-normal-2d" width="500" height="500" style="width:500; height:500;"></canvas>
+      <br>
+      Pareto:
+      <br>
+      <canvas id="random-pareto" width="500" height="80" style="width:500; height:80;"></canvas>
+      <br>
+      <canvas id="random-pareto-2d" width="500" height="500" style="width:500; height:500;"></canvas>
+    </div>
+    <script>
+    var data = [
+      {
+        canvasName: 'random-uniform',
+        randomizer: function(i) {
+          return random.uniform(0, 500);
+        }
+      },
+      {
+        canvasName: 'random-normal',
+        randomizer: function(i) {
+          return random.normal(250, 100);
+        }
+      },
+      {
+        canvasName: 'random-pareto',
+        randomizer: function(i) {
+          return random.pareto(0.1);
+        }
+      }
+    ];
+
+    for(var data_idx = 0; data_idx < data.length; data_idx++) {
+      var entry = data[data_idx];
+      var canvas = document.getElementById(entry.canvasName);
+      var canvasWidth = canvas.width;
+      var canvasHeight = canvas.height;
+      var ctx = canvas.getContext("2d");
+      var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+        var selected = new Array(canvasWidth/2);
+        for(var i = 0; i < canvasWidth/2; i++) {
+          var value = entry.randomizer(i);
+          selected[Math.round(value)] = 1;
+        }
+
+        for(var x = 0; x < canvasWidth; x++) {
+          var value = selected[x];
+          if(value === undefined) {
+            value = 0;
+          }
+          for(var y = 0; y < canvasHeight; y++) {
+            var index = (x + y * canvasWidth) * 4;
+            canvasData.data[index + 0] = value ? 0 : 255; // r
+            canvasData.data[index + 1] = value ? 0 : 255; // g
+            canvasData.data[index + 2] = value ? 0 : 255; // b
+            canvasData.data[index + 3] = 255; // a
+          }
+        }
+        ctx.putImageData(canvasData, 0, 0);
+      }
+
+      for(var data_idx = 0; data_idx < data.length; data_idx++) {
+        var entry = data[data_idx];
+        var canvas = document.getElementById(entry.canvasName + "-2d");
+        var canvasWidth = canvas.width;
+        var canvasHeight = canvas.height;
+        var ctx = canvas.getContext("2d");
+        var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+          var selected = new Array(canvasWidth/2);
+          for(var i = 0; i < canvasWidth/2*canvasHeight/2; i++) {
+            var x = Math.round(entry.randomizer(i));
+            var y = Math.round(entry.randomizer(i));
+            if(selected[x] === undefined) {
+              selected[x] = Array(canvasHeight/2);
+            }
+            selected[x][y] = 1;
+          }
+
+          for(var x = 0; x < canvasWidth; x++) {
+            for(var y = 0; y < canvasHeight; y++) {
+              var value;
+              var xcolumn = selected[x];
+              if(xcolumn === undefined) {
+                value = 0;
+              } else {
+                value = xcolumn[y];
+              }
+              if(value === undefined) {
+                value = 0;
+              }
+
+              var index = (x + y * canvasWidth) * 4;
+              canvasData.data[index + 0] = value ? 0 : 255; // r
+              canvasData.data[index + 1] = value ? 0 : 255; // g
+              canvasData.data[index + 2] = value ? 0 : 255; // b
+              canvasData.data[index + 3] = 255; // a
+            }
+          }
+          ctx.putImageData(canvasData, 0, 0);
+        }
+    </script>
+  </body>
+</html>
