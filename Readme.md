@@ -10,11 +10,11 @@ and [three.js](http://threejs.org/).
 Core:
 
 * Randomness - random distribution utilities (uniform, gaussian, power law)
-* Consistent Noise - consistent noise algorithms,  e.g. terrain
+* Consistent Noise - consistent noise algorithms,  e.g. terrain, water
 * L-Systems - self-similar structures, e.g. trees, plants
 * Marching Cubes - meshes from scalar fields, e.g. caves, coral reefs
 * Color - coordinated colors, e.g. gradients, palettes
-* Skeletons (planned)
+* Mesh Skeletons (planned)
 
 Application libraries:
 
@@ -28,10 +28,14 @@ Purpose
 This project is mainly intended for my own learning and experimentation purposes,  but others are
 free to use it.
 
+The main reason I've put it together is to gather a variety of algorithms and techniques
+for generating procedural content into a single place where I can easily combine them together
+to test some procedural generation concepts I am exploring.
+
 Design goals
 ------------
 
-* Provide consistent APIs to core procedural utilities in the style of three.js.
+* Provide consistent APIs to core procedural utilities, written in the OO style of three.js.
 
 * Composition - Should be easy to build up new applications of procedurally generated content
   by composing the core utilities in this library in new and unique ways.
@@ -80,8 +84,10 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
+* [ ] Clean up Color converter to use classes, add a lerp operation to new HCLColor class
 * [ ] Update Gradient generator to use HCL, should better for lerp than RGB
 * [ ] Add Markov Chains
+* [ ] Fill in "holes" in HCL space, see http://blog.noctua-software.com/procedural-colors-for-game.html for details.
 
 * [ ] Fix marching cubes so all parameters can be passed in, have good defaults
 * [ ] Add vertex smoothing/removal routine for marching cubes.
