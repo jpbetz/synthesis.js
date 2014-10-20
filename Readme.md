@@ -1,10 +1,10 @@
-procedural.js
+synthesis.js
 =============
 
 Overview
 --------
 
-A procedurally generated content library for [WebGL](http://en.wikipedia.org/wiki/WebGL)
+A content synthesis library for [WebGL](http://en.wikipedia.org/wiki/WebGL)
 and [three.js](http://threejs.org/).
 
 Core:
@@ -29,15 +29,21 @@ This project is mainly intended for my own learning and experimentation purposes
 free to use it.
 
 The main reason I've put it together is to gather a variety of algorithms and techniques
-for generating procedural content into a single place where I can easily combine them together
-to test some procedural generation concepts I am exploring.
+for generating synthetic content into a single place where I can easily combine them together
+to test some concepts I am exploring.
+
+There are a lot of elements of procedurally generated content in this project but it is not intended
+as a procedurally generated content toolset in the purest meaning of the term.  In particular,  this
+project does not contain utilities to help use a a single random seed to deterministically generate a entire world or
+universe.  Some of components of this library could be used toward that end,  but they could just as
+easily be used to build content combined with artwork created by hand.
 
 Design goals
 ------------
 
-* Provide consistent APIs to core procedural utilities, written in the OO style of three.js.
+* Provide consistent APIs to core utilities, written in the OO style of three.js.
 
-* Composition - Should be easy to build up new applications of procedurally generated content
+* Composition - Should be easy to build up new applications of synthetic content
   by composing the core utilities in this library in new and unique ways.
 
 * Convenient parameterization - allow for some parameters to be constrained to ranges, distributions
@@ -58,7 +64,7 @@ or animated water height maps.
 
 Pick a random starting coordinate to randomize a surface.
 
-L-System
+L-Systems
 --------
 
 Generates random trees using a stochastic L-System and renders them using
@@ -118,6 +124,7 @@ npm install grunt --save-dev
 
 ```sh
 npm install
+bower install
 ```
 
 Build
@@ -127,7 +134,7 @@ Build
 grunt
 ```
 
-Resulting procedural.js is written to build/procedural.js.
+Resulting synthesis.js is written to build/synthesis.js.
 
 Adding Dependencies
 ===================

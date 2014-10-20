@@ -1,9 +1,9 @@
 {
-  "name": "procedural.js",
+  "name": "synthesis-js",
   "version": "0.0.1",
-  "homepage": "http://https://github.com/jpbetz/procedural.js",
-  "description": "A procedurally generated content library for WebGL and three.js",
-  "main": "build/procedural.min.js",
+  "homepage": "http://https://github.com/jpbetz/synthesis.js",
+  "description": "A content synthesis library for WebGL and three.js",
+  "main": "build/synthesis.min.js",
   "dependencies": {
     "threejs": "*"
   },
