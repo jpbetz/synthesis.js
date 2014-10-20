@@ -22,7 +22,14 @@ Application libraries:
 * Terrain (Flat, Spherical)
 * Water (planned)
 
-Design goals:
+Purpose
+-------
+
+This project is mainly intended for my own learning and experimentation purposes,  but others are
+free to use it.
+
+Design goals
+------------
 
 * Provide consistent APIs to core procedural utilities in the style of three.js.
 
@@ -36,20 +43,16 @@ Design goals:
   be enabled by default.
 
 
-Purpose
--------
-
-Make it easy to prototype procedural content generation ideas by making it easy
-to compose together core generation utilities with 3d rendering.
-
-
 Core utilities
 ==============
 
 Consistent Noise
 ----------------
 
-Simplex provides a consistent noise source.  Pick a random starting coordinate to randomize.
+Simplex provides a consistent noise source, which can be used to generate random terrain height maps
+or animated water height maps.
+
+Pick a random starting coordinate to randomize a surface.
 
 L-System
 --------
@@ -59,6 +62,10 @@ WebGL and three.js.
 
 Marching Cubes
 --------------
+
+Marching cubes can create a mesh from a scalar field.   It has many applications,
+and is a powerful tool in the procedural generation toolbox.  It can, for example,
+be use to generate complex natural terrain that inclues caves and arches.
 
 Color
 -----
@@ -73,8 +80,7 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
-* [ ] Add random coordinated color palette generator ()
-* [ ] Add random distributions (https://www.tylerlhobbs.com/writings/probability-distributions-for-artists)
+* [ ] Update Gradient generator to use HCL, should better for lerp than RGB
 * [ ] Add Markov Chains
 
 * [ ] Fix marching cubes so all parameters can be passed in, have good defaults

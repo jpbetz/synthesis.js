@@ -1,0 +1,150 @@
+<html>
+  <head>
+    <title>Random</title>
+    <style>canvas { width: 100%; height: 100% }</style>
+  </head>
+  <body style="margin: 0; text-align:justify;">
+    <script src="../bower_components/threejs/build/three.min.js"></script>
+    <script src="../build/procedural.js"></script>
+    <script src="../lib/random.js"></script>
+    <div>
+      HCL (Chroma = 30, Light = 50):
+      <br>
+      <canvas id="hcl" width="500" height="500" style="width:500; height:500;"></canvas>
+      <br>
+      Complementary:
+      <br>
+      <canvas id="complementary" width="500" height="500" style="width:500; height:500;"></canvas>
+
+      <br>
+      Split Complementary:
+      <br>
+      <canvas id="split-complementary" width="500" height="500" style="width:500; height:500;"></canvas>
+
+      <br>
+      analogous:
+      <br>
+      <canvas id="analogous" width="500" height="500" style="width:500; height:500;"></canvas>
+
+      <br>
+      triad:
+      <br>
+      <canvas id="triad" width="500" height="500" style="width:500; height:500;"></canvas>
+
+      <br>
+      tetradic:
+      <br>
+      <canvas id="tetradic" width="500" height="500" style="width:500; height:500;"></canvas>
+
+      <br>
+      square:
+      <br>
+      <canvas id="square" width="500" height="500" style="width:500; height:500;"></canvas>
+    </div>
+    <script>
+    var converter = new ColorConverter();
+    var generator = new ColorGenerator();
+
+    var canvas = document.getElementById("hcl");
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+    var ctx = canvas.getContext("2d");
+    var total = 100;
+
+    var a = 3;
+    var b = 4;
+    var c = 3;
+
+    var colorCount = 360/10;
+    for(var i = 0; i < colorCount; i++) {
+      var hcl = {h: i*10, c: 30, l: 50};
+      var rgb = converter.hclToRgb(hcl.h, hcl.c, hcl.l);
+      var color = new THREE.Color(rgb.r, rgb.g, rgb.b);
+      var hexColor = "#" + color.getHexString();
+
+      ctx.moveTo(canvasWidth/2, canvasHeight/2);
+      ctx.fillStyle = hexColor;
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(canvasWidth/2, canvasHeight/2, canvasWidth/3, Math.PI * 2 * i / colorCount, Math.PI * 2 * (i+1) / colorCount, false);
+      ctx.lineTo(canvasWidth/2, canvasHeight/2);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+    }
+
+    var base = generator.randomColor();
+    var complementary = generator.pickComplementaryColor(base);
+    var complementaryColors = [ base, complementary ];
+
+    var splitComplementaryColors = generator.pickSplitComplementaryColors(base);
+    splitComplementaryColors.push(base);
+
+    var analogousColors = generator.pickAnalogousColors(base);
+    analogousColors.push(base);
+
+    var triadColors = generator.pickTriadColors(base);
+    triadColors.push(base);
+
+    var tetradicColors = generator.pickTetradicColors(base);
+    tetradicColors.push(base);
+
+    var squareColors = generator.pickSquareColors(base);
+    squareColors.push(base);
+
+    var data = [
+      {
+        canvasName: "complementary",
+        colors: complementaryColors
+      },
+      {
+        canvasName: "split-complementary",
+        colors: splitComplementaryColors
+      },
+      {
+        canvasName: "analogous",
+        colors: analogousColors
+      },
+      {
+        canvasName: "triad",
+        colors: triadColors
+      },
+      {
+        canvasName: "tetradic",
+        colors: tetradicColors
+      },
+      {
+        canvasName: "square",
+        colors: squareColors
+      }
+    ];
+
+    for(var data_idx = 0; data_idx < data.length; data_idx++) {
+      var entry = data[data_idx];
+      var canvasName = entry.canvasName;
+      var colors = entry.colors;
+
+      var canvas = document.getElementById(canvasName);
+      var canvasWidth = canvas.width;
+      var canvasHeight = canvas.height;
+      var ctx = canvas.getContext("2d");
+
+      for(var i = 0; i < colors.length; i++) {
+        var hexColor = "#" + colors[i].getHexString();
+
+        ctx.moveTo(canvasWidth/2, canvasHeight/2);
+        ctx.fillStyle = hexColor;
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(canvasWidth/2, canvasHeight/2, canvasWidth/3, Math.PI * 2 * i / colors.length, Math.PI * 2 * (i+1) / colors.length, false);
+        ctx.lineTo(canvasWidth/2, canvasHeight/2);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+      }
+    }
+    </script>
+  </body>
+</html>
