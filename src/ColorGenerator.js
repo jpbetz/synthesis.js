@@ -16,7 +16,7 @@ ColorGenerator.prototype = {
   },
 
   modifyH: function(color, modifierFunction) {
-    var hcl = converter.rgbToHcl(color.r, color.g, color.b);
+    var hcl = this.converter.rgbToHcl(color.r, color.g, color.b);
     var h = modifierFunction(hcl.h);
     var c = hcl.c;
     var l = hcl.l;

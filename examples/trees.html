@@ -77,6 +77,12 @@
 			var minDepth = 6;
 			var maxDepth = 11;
 
+			var colorGenerator = new ColorGenerator();
+			var baseColor = colorGenerator.randomColor();
+			var complementaryColor = colorGenerator.pickComplementaryColor(baseColor);
+			var branchColorHex = baseColor.getHex();
+			var leafColorHex = complementaryColor.getHex();
+
 			for(var i = 0; i < trees; i++) {
 				var depth = Math.floor(Math.random() * (maxDepth - minDepth)) + minDepth;
 				var lsystem = new LSystem(axiom, rules);
@@ -87,8 +93,8 @@
 					'branchThickness': 0.6*(depth/maxDepth),
 					'leafSize': 2.5*(depth/maxDepth),
 					'depthSizeRatio': 0.96,
-					'branchMaterial': new THREE.MeshPhongMaterial( { ambient: 0x565d5d, color: 0x965d5d, specular: 0x050505 } ),
-					'leafMaterial': new THREE.MeshPhongMaterial( { ambient: 0xe8ffff, color: 0xe8ffff, specular: 0x050505 } ),
+					'branchMaterial': new THREE.MeshPhongMaterial( { ambient: branchColorHex, color: branchColorHex, specular: 0x050505 } ),
+					'leafMaterial': new THREE.MeshPhongMaterial( { ambient: leafColorHex, color: leafColorHex, specular: 0x050505 } ),
 					'angleVariation': 0.30,
 					'sizeVariation': 0.10,
 					'sidesPerMesh': 8
