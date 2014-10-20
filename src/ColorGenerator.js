@@ -8,8 +8,8 @@ ColorGenerator.prototype = {
   randomColor: function(parameters) {
     parameters = parameters || {};
     var h = parameters.h !== undefined ? parameters.h : Math.random()*360;
-    var c = parameters.c !== undefined ? parameters.c : 30;
-    var l = parameters.l !== undefined ? parameters.l : 60;
+    var c = parameters.c !== undefined ? parameters.c : 20*Math.random()*20;
+    var l = parameters.l !== undefined ? parameters.l : 40*Math.random()*30;
 
     var rgb = this.converter.hclToRgb(h, c, l);
     return new THREE.Color(rgb.r, rgb.g, rgb.b);

@@ -57,7 +57,7 @@
 
     var colorCount = 360/10;
     for(var i = 0; i < colorCount; i++) {
-      var hcl = {h: i*10, c: 30, l: 50};
+      var hcl = {h: i*10, c: 30, l: 70};
       var rgb = converter.hclToRgb(hcl.h, hcl.c, hcl.l);
       var color = new THREE.Color(rgb.r, rgb.g, rgb.b);
       var hexColor = "#" + color.getHexString();
@@ -74,7 +74,7 @@
       ctx.fill();
     }
 
-    var base = generator.randomColor();
+    var base = generator.randomColor({ c: 30, l:70 });
     var complementary = generator.pickComplementaryColor(base);
     var complementaryColors = [ base, complementary ];
 
