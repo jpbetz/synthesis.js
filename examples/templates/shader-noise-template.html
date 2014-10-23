@@ -30,7 +30,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      camera.position.add(new THREE.Vector3(30, 10, 40));
+      camera.position.add(new THREE.Vector3(30, 0, 40));
 
       // LIGHTS
       hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -46,7 +46,7 @@
       scene.add( dirLight );
 
       pointLight = new THREE.PointLight( 0xffffff, 0.8, 100 );
-      pointLight.position.set( -10, 0, 10 );
+      pointLight.position.set( -10, 0, 50 );
       scene.add( pointLight );
 
       dirLight.castShadow = true;
