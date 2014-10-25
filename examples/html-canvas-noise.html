@@ -1,34 +1,59 @@
 <html>
   <head>
     <title>Noise on Html Canvas</title>
-    <style>canvas { width: 100%; height: 100% }</style>
   </head>
   <body>
     <script src="../bower_components/threejs/build/three.min.js"></script>
-    <script src="../dist/synthesis.min.js"></script>
+    <script src="../build/synthesis.js"></script>
     <div>
-      <canvas id="noiseExample1" width="100" height="80"></canvas>
+      Simplex:
+      <br>
+      <canvas id="simplexNoise" width="500" height="500"></canvas>
+      <br>
+      Worley:
+      <br>
+      <canvas id="worleyNoise" width="500" height="500"></canvas>
+      <br>
     </div>
     <script>
-    var canvas = document.getElementById("noiseExample1");
+    var canvas = document.getElementById("simplexNoise");
     var canvasWidth = canvas.width;
     var canvasHeight = canvas.height;
     var ctx = canvas.getContext("2d");
     var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+    var noise = new Simplex();
+    for(var x = 0; x < 500; x++) {
+      for(var y = 0; y < 500; y++) {
+        var index = (x + y * canvasWidth) * 4;
 
-      var noise = new Simplex();
-      for(var x = 0; x < 100; x++) {
-        for(var y = 0; y < 100; y++) {
-          var index = (x + y * canvasWidth) * 4;
-
-          var value = noise.getOctaveNoise(x/10, y/10, 1, 8) * 255;
-          canvasData.data[index + 0] = value; // r
-          canvasData.data[index + 1] = value; // g
-          canvasData.data[index + 2] = value; // b
-          canvasData.data[index + 3] = 255; // a
-        }
+        var value = noise.getOctaveNoise(x/100, y/100, 1, 8) * 255;
+        canvasData.data[index + 0] = value; // r
+        canvasData.data[index + 1] = value; // g
+        canvasData.data[index + 2] = value; // b
+        canvasData.data[index + 3] = 255; // a
       }
-      ctx.putImageData(canvasData, 0, 0);
+    }
+    ctx.putImageData(canvasData, 0, 0);
+
+    var canvas = document.getElementById("worleyNoise");
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
+    var ctx = canvas.getContext("2d");
+    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+    var noise = new Worley(3, Worley.EUCLIDIAN);
+    for(var x = 0; x < 500; x++) {
+      for(var y = 0; y < 500; y++) {
+        var index = (x + y * canvasWidth) * 4;
+        var data = noise.nearestPointWithDistance(x/100.0, y/100.0);
+        var distance = data[1];
+        var value = distance * 255;
+        canvasData.data[index + 0] = value; // r
+        canvasData.data[index + 1] = value; // g
+        canvasData.data[index + 2] = value; // b
+        canvasData.data[index + 3] = 255; // a
+      }
+    }
+    ctx.putImageData(canvasData, 0, 0);
 
     </script>
   </body>

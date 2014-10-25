@@ -60,9 +60,13 @@ Consistent Noise
 ----------------
 
 Simplex provides a consistent noise source, which can be used to generate random terrain height maps
-or animated water height maps.
+or surface textures.
 
-Pick a random starting coordinate to randomize a surface.
+Worley provides consistent noise which can be used to represent stone textures, cellular structure,
+ridge lines, etc...
+
+For all consistent noise algorithms, results are deterministic.  To add some randomness, one may pick a
+random starting coordinate before sampling.
 
 L-Systems
 --------
