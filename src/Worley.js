@@ -1,82 +1,172 @@
 // TODO: This is very inefficient for sampling because points are recomputed each time a cell is touched
-// TODO: add 3D support
 // maybe cell points should be stored?
 
 Worley = function(averagePointsPerCell, distanceMeasure) {
   this.initialize(averagePointsPerCell, distanceMeasure);
 };
 
-
 // TODO: distance measures to implement:
 // Chebyshev
 // quadratic
 // weighted?
-Worley.EUCLIDIAN = function(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+Worley.EUCLIDIAN = {
+  distance2D: function(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+  },
+  distance3D: function(x1, y1, z1, x2, y2, z2) {
+    return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2) + Math.pow(z1-z2, 2));
+  }
 };
 
-Worley.MANHATTAN = function(x1, y1, x2, y2) {
-  return Math.abs(x1-x2) + Math.abs(y1-y2);
+Worley.MANHATTAN = {
+  distance2D: function(x1, y1, x2, y2) {
+    return Math.abs(x1-x2) + Math.abs(y1-y2);
+  },
+  distance3D: function(x1, y1, z1, x2, y2, z2) {
+    return Math.abs(x1-x2) + Math.abs(y1-y2) + Math.abs(z1-z2);
+  }
 };
 
 // cube width and height are always 1,  averagePointsPerCell can be adjusted
 Worley.prototype = {
 
   distanceMeasure: function() {},
+  distanceMeasure3D: function() {},
 
   averagePointsPerCell: 1,
 
   initialize: function(averagePointsPerCell, distanceMeasure) {
     this.averagePointsPerCell = averagePointsPerCell;
 
-    if(distanceMeasure !== undefined) {
-      this.distanceMeasure = distanceMeasure;
+    if(distanceMeasure === undefined) {
+      this.distanceMeasure = Worley.EUCLIDIAN.distance2D;
+      this.distanceMeasure3D = Worley.EUCLIDIAN.distance3D;
     } else {
-      this.distanceMeasure = Worley.EUCLIDIAN;
+      this.distanceMeasure = distanceMeasure.distance2D;
+      this.distanceMeasure3D = distanceMeasure.distance3D;
     }
   },
 
   distanceToNthPoint: function(evalPointX, evalPointY, n) {
-    var results = this.nearestPointsWithDistance(evalPointX, evalPointY, n);
+    var results = this.nNearest(evalPointX, evalPointY, n);
     var nthPoint = results[n-1];
-    return nthPoint;
+    return nthPoint[0];
   },
 
-  // TODO: return the id of the nearest feature point,  can just be something like 9*((x*y)+x)+pointCountInCell
-  nearestPointsWithDistance: function(evalPointX, evalPointY, pointCount) {
+  nthPoint: function(evalPointX, evalPointY, n) {
+    var results = this.nNearest(evalPointX, evalPointY, n);
+    var nthPoint = results[n-1];
+    return [nthPoint[1], nthPoint[2]];
+  },
+
+  nthPointId: function(evalPointX, evalPointY, n) {
+    var results = this.nNearest(evalPointX, evalPointY, n);
+    var nthPoint = results[n-1];
+    return nthPoint[1] + '-' + nthPoint[2];
+  },
+
+  pointDistComparitor: function(p1, p2) { return p1[0] > p2[0]; },
+
+  nNearest: function(evalPointX, evalPointY, n) {
     var cubeX = Math.floor(evalPointX);
     var cubeY = Math.floor(evalPointY);
 
     // TODO: optimize by checking if the neighboring cell could possibly have any closer feature points before
     // calculating the points
     var matches = [];
+    this.accumulate(evalPointX, evalPointY, cubeX, cubeY, matches, n);
     for (var i = -1; i <= 1; i++) {
       for (var j = -1; j <= 1; j++) {
-        var neighborX = cubeX + i;
-        var neighborY = cubeY + j;
-        var seed = (neighborX * neighborY) + neighborX;
-        var randomizer = new Random(seed);
+        if(!(i === 0 && j === 0)) {
+          this.accumulate(evalPointX, evalPointY, cubeX + i, cubeY + j, matches, n);
+        }
+      }
+    }
+    return matches;
+  },
 
-        // compare r1 to the poisson distribution, determine how many points are in cell,
-        // clamped between 1 and 9
-        var poissonSampledValue = randomizer.poisson(this.averagePointsPerCell);
-        var pointsInCell = this.clamp(Math.round(poissonSampledValue), 1, 9);
-        for (var pid = 0; pid < pointsInCell; pid++) {
-          var featurePointX = neighborX + randomizer.uniform(0, 1);
-          var featurePointY = neighborY + randomizer.uniform(0, 1);
-          //var id = 9*neighborY*neighborX*pid;
-          var dist = this.distanceMeasure(evalPointX, evalPointY, featurePointX, featurePointY);
-          if(matches.length < pointCount || dist < matches[matches.length-1]) {
-            matches.push(dist);
-            matches.sort();
-            if(matches.length > pointCount) {
-              matches.pop();
-            }
+  accumulate: function(evalPointX, evalPointY, neighborX, neighborY, matches, n) {
+    var seed = (neighborX * neighborY) + neighborX;
+    var cubeRandom = new Random(seed);
+
+    // compare r1 to the poisson distribution, determine how many points are in cell,
+    // clamped between 1 and 9
+    var poissonSampledValue = cubeRandom.poisson(this.averagePointsPerCell);
+    var pointsInCell = this.clamp(Math.round(poissonSampledValue), 1, 9);
+    for (var pid = 0; pid < pointsInCell; pid++) {
+      var featurePointX = neighborX + cubeRandom.uniform(0, 1);
+      var featurePointY = neighborY + cubeRandom.uniform(0, 1);
+      var dist = this.distanceMeasure(evalPointX, evalPointY, featurePointX, featurePointY);
+      if(matches.length < n || dist < matches[matches.length-1][0]) {
+        matches.push([dist, featurePointX, featurePointY]);
+        matches.sort(this.pointDistComparitor);
+        if(matches.length > n) {
+          matches.pop();
+        }
+      }
+    }
+  },
+
+  distanceToNthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return nthPoint[0];
+  },
+
+  nthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return [nthPoint[1], nthPoint[2], nthPoint[3]];
+  },
+
+  nthPointId3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return nthPoint[1] + '-' + nthPoint[2] + '-' + nthPoint[3];
+  },
+
+  nNearest3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var cubeX = Math.floor(evalPointX);
+    var cubeY = Math.floor(evalPointY);
+    var cubeZ = Math.floor(evalPointZ);
+
+    // TODO: optimize by checking if the neighboring cell could possibly have any closer feature points before
+    // calculating the points
+    var matches = [];
+    this.accumulate3D(evalPointX, evalPointY, evalPointZ, cubeX, cubeY, cubeZ, matches, n);
+    for (var i = -1; i <= 1; i++) {
+      for (var j = -1; j <= 1; j++) {
+        for (var k = -1; k <= 1; k++) {
+          if(!(i === 0 && j === 0 && k === 0)) {
+            this.accumulate3D(evalPointX, evalPointY, evalPointZ, cubeX + i, cubeY + j, cubeZ + k, matches, n);
           }
         }
       }
     }
     return matches;
+  },
+
+  accumulate3D: function(evalPointX, evalPointY, evalPointZ, neighborX, neighborY, neighborZ, matches, n) {
+    var seed = (neighborX * neighborY * neighborZ) + (neighborX * neighborY) + neighborX;
+    var cubeRandom = new Random(seed);
+
+    // compare r1 to the poisson distribution, determine how many points are in cell,
+    // clamped between 1 and 9
+    var poissonSampledValue = cubeRandom.poisson(this.averagePointsPerCell);
+    var pointsInCell = this.clamp(Math.round(poissonSampledValue), 1, 9);
+    for (var pid = 0; pid < pointsInCell; pid++) {
+      var featurePointX = neighborX + cubeRandom.uniform(0, 1);
+      var featurePointY = neighborY + cubeRandom.uniform(0, 1);
+      var featurePointZ = neighborZ + cubeRandom.uniform(0, 1);
+      var dist = this.distanceMeasure3D(evalPointX, evalPointY, evalPointZ, featurePointX, featurePointY, featurePointZ);
+      if(matches.length < n || dist < matches[matches.length-1][0]) {
+        matches.push([dist, featurePointX, featurePointY, featurePointZ]);
+        matches.sort(this.pointDistComparitor);
+        if(matches.length > n) {
+          matches.pop();
+        }
+      }
+    }
   },
 
   clamp: function(value, min, max) {

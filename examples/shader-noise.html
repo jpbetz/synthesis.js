@@ -21,14 +21,19 @@ const float DiffuseContribution = 1.0 - SpecularContribution;
 
 void main()
 {
+  // vertex in view space
   vec4 ecPosition = modelViewMatrix * vec4(position, 1.0);
   vec3 ecPosition3 = ecPosition.xyz;
 
+  // normal in view space
   vec3 tnorm = normalize(normalMatrix * normal);
+
+  // unit vector toward viewer from vector in view space
   vec3 viewVec = normalize(-ecPosition3);
 
   lightIntensity = 0.0;
   for(int l = 0; l < MAX_POINT_LIGHTS; l++) {
+    // light position in view space (it was already in worldspace, so no model transform not applied)
     vec4 lightPosition = viewMatrix * vec4( pointLightPosition[l], 1.0 );
     vec3 lightPosition3 = lightPosition.xyz;
 
@@ -39,7 +44,7 @@ void main()
 
     float distanceToLight = length(positionLightVector);
 
-    if(distanceToLight <= maxLightDistance) {
+    if(distanceToLight <= maxLightDistance) { // if the light is in range
       //float attenuation = 1.0 / (distanceToLight * distanceToLight);
       vec3 lightVec = normalize(positionLightVector);
       //vec3 reflectVec = reflect(-lightVec, tnorm); // for specular

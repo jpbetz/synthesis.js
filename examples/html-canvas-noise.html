@@ -8,53 +8,112 @@
     <div>
       Simplex:
       <br>
-      <canvas id="simplexNoise" width="500" height="500"></canvas>
+      <canvas id="simplexNoise" width="250" height="250"></canvas>
       <br>
-      Worley:
+      Worley 1 deg:
       <br>
-      <canvas id="worleyNoise" width="500" height="500"></canvas>
+      <canvas id="worleyNoise1" width="250" height="250"></canvas>
+      <br>
+      Worley 2 deg:
+      <br>
+      <canvas id="worleyNoise2" width="250" height="250"></canvas>
+      <br>
+      Worley Manhattan:
+      <br>
+      <canvas id="worleyNoiseManhattan" width="250" height="250"></canvas>
+      <br>
+      Worley Multiplication:
+      <br>
+      <canvas id="worleyNoiseMultiplication" width="250" height="250"></canvas>
+      <br>
+      Worley Coloring:
+      <br>
+      <canvas id="worleyNoiseColoring" width="250" height="250"></canvas>
+      <br>
+      Worley 3D:
+      <br>
+      <canvas id="worleyNoise3D" width="250" height="250"></canvas>
       <br>
     </div>
     <script>
-    var canvas = document.getElementById("simplexNoise");
-    var canvasWidth = canvas.width;
-    var canvasHeight = canvas.height;
-    var ctx = canvas.getContext("2d");
-    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-    var noise = new Simplex();
-    for(var x = 0; x < 500; x++) {
-      for(var y = 0; y < 500; y++) {
-        var index = (x + y * canvasWidth) * 4;
+    var generator = new ColorGenerator();
+    var colorMap = {};
+    var baseColor = generator.randomColor({ c: 30, l:70 });
+    var colors = generator.pickAnalogousColors(baseColor);
+    colors.push(baseColor);
+    var idx = 0;
 
-        var value = noise.getOctaveNoise(x/100, y/100, 1, 8) * 255;
-        canvasData.data[index + 0] = value; // r
-        canvasData.data[index + 1] = value; // g
-        canvasData.data[index + 2] = value; // b
-        canvasData.data[index + 3] = 255; // a
+    var monochrome = function (value) { return new THREE.Color(value, value, value); };
+
+    var data = [
+      {
+        canvasName: "simplexNoise",
+        initialize: function() { return new Simplex(); },
+        sample: function(instance, x, y) { return monochrome(instance.getOctaveNoise(x/100, y/100, 1, 8)); }
+      },
+      {
+        canvasName: "worleyNoise1",
+        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        sample: function(instance, x, y) { return monochrome(instance.distanceToNthPoint(x/100.0, y/100.0, 1)); }
+      },
+      {
+        canvasName: "worleyNoise2",
+        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        sample: function(instance, x, y) { return monochrome(instance.distanceToNthPoint(x/100.0, y/100.0, 2)); }
+      },
+      {
+        canvasName: "worleyNoiseManhattan",
+        initialize: function() { return new Worley(5, Worley.MANHATTAN); },
+        sample: function(instance, x, y) { return monochrome(instance.distanceToNthPoint(x/100.0, y/100.0, 1)); }
+      },
+      {
+        canvasName: "worleyNoiseMultiplication",
+        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        sample: function(instance, x, y) { return monochrome(instance.distanceToNthPoint(x/50.0, y/50.0, 1) * instance.distanceToNthPoint(x/50.0, y/50.0, 2) * 2); }
+      },
+      {
+        canvasName: "worleyNoiseColoring",
+        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        sample: function(instance, x, y) {
+          var id = instance.nthPointId(x/50.0, y/50.0, 1);
+          if (id in colorMap) {
+            return colorMap[id];
+          } else {
+            var color = colors[idx % colors.length];
+            colorMap[id] = color;
+            idx++;
+            return color;
+          }
+        }
+      },
+      {
+        canvasName: "worleyNoise3D",
+        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        sample: function(instance, x, y) { return monochrome(instance.distanceToNthPoint3D(x/50.0, 1, y/50, 1)); }
       }
-    }
-    ctx.putImageData(canvasData, 0, 0);
+    ];
 
-    var canvas = document.getElementById("worleyNoise");
-    var canvasWidth = canvas.width;
-    var canvasHeight = canvas.height;
-    var ctx = canvas.getContext("2d");
-    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-    var noise = new Worley(3, Worley.EUCLIDIAN);
-    for(var x = 0; x < 500; x++) {
-      for(var y = 0; y < 500; y++) {
-        var index = (x + y * canvasWidth) * 4;
-        var distance = noise.distanceToNthPoint(x/100.0, y/100.0, 1);
-        //var distance = noise.distanceToNthPoint(x/100.0, y/100.0, 2) * noise.distanceToNthPoint(x/100.0, y/100.0, 1);
-        var value = distance * 255;
-        canvasData.data[index + 0] = value; // r
-        canvasData.data[index + 1] = value; // g
-        canvasData.data[index + 2] = value; // b
-        canvasData.data[index + 3] = 255; // a
+    for (var i = 0; i < data.length; i++) {
+      var entry = data[i];
+      var canvas = document.getElementById(entry.canvasName);
+      var canvasWidth = canvas.width;
+      var canvasHeight = canvas.height;
+      var ctx = canvas.getContext("2d");
+      var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+      var instance = entry.initialize();
+      for(var x = 0; x < canvasWidth; x++) {
+        for(var y = 0; y < canvasHeight; y++) {
+          var index = (x + y * canvasWidth) * 4;
+          var color = entry.sample(instance, x, y);
+          canvasData.data[index + 0] = color.r*255; // r
+          canvasData.data[index + 1] = color.g*255; // g
+          canvasData.data[index + 2] = color.b*255; // b
+          canvasData.data[index + 3] = 255; // a
+        }
       }
+      ctx.putImageData(canvasData, 0, 0);
     }
-    ctx.putImageData(canvasData, 0, 0);
-
+    colorMap = colorMap;
     </script>
   </body>
 </html>
