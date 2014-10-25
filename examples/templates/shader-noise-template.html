@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Tree Generator</title>
+    <title>3D Noise</title>
     <style>canvas { width: 100%; height: 100% }</style>
   </head>
   <body>
@@ -30,7 +30,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      camera.position.add(new THREE.Vector3(30, 10, 40));
+      camera.position.add(new THREE.Vector3(30, 0, 40));
 
       // LIGHTS
       hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -39,11 +39,15 @@
       hemiLight.position.set( 0, 500, 0 );
       scene.add( hemiLight );
 
-      dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+      dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
       dirLight.color.setHSL( 0.1, 1, 0.95 );
       dirLight.position.set( -1, 1.75, 1 );
       dirLight.position.multiplyScalar( 50 );
       scene.add( dirLight );
+
+      pointLight = new THREE.PointLight( 0xffffff, 0.8, 100 );
+      pointLight.position.set( -10, 0, 50 );
+      scene.add( pointLight );
 
       dirLight.castShadow = true;
 
@@ -67,7 +71,7 @@
       ]);
 
       var noiseMaterial = new ShaderNoiseMaterial(100, 100, { gradient: gradient, octaves: 8 });
-      var noiseGeometry = new THREE.SphereGeometry(5, 32, 32);
+      var noiseGeometry = new THREE.SphereGeometry(5, 128, 128);
       var noiseMesh = new THREE.Mesh(noiseGeometry, noiseMaterial);
 
       scene.add(noiseMesh);

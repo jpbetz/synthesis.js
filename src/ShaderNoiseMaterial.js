@@ -18,13 +18,17 @@ ShaderNoiseMaterial = function(width, height, params) {
   var z = sampleOrigin.z;
 
   THREE.ShaderMaterial.call(this, {
-    uniforms: {
-      octaves: { type: "1i", value: pOctaves },
-      sampleOrigin: { type: "v3", value: sampleOrigin },
-      sampleMultiplier: { type: "3fv", value: sampleMultiplier }
-  	},
+    uniforms: THREE.UniformsUtils.merge([
+      THREE.UniformsLib.lights,
+      {
+        octaves: { type: "1i", value: pOctaves },
+        sampleOrigin: { type: "v3", value: sampleOrigin },
+        sampleMultiplier: { type: "3fv", value: sampleMultiplier }
+	    }
+    ]),
 	  vertexShader: vertexShader,
-	  fragmentShader: fragmentShader
+	  fragmentShader: fragmentShader,
+    lights: true
   });
   this.needsUpdate = true;
 };
