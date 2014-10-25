@@ -1,5 +1,17 @@
-// TODO: This is very inefficient for sampling because points are recomputed each time a cell is touched
-// maybe cell points should be stored?
+/**
+ * Worley noise generator.
+ * Features:
+ *  - 2D and 3D noise
+ *  - Nth nearest point support, not just limited to nearest point
+ *  - Able to retrieve:
+ *    - distance to Nth point
+ *    - coordinate of Nth point
+ *    - id of Nth point
+ * - Pluggable distance function,  e.g. use Manhattan distance instead of Euclidian
+ *
+ * jpbetz
+ *
+ */
 
 Worley = function(averagePointsPerCell, distanceMeasure) {
   this.initialize(averagePointsPerCell, distanceMeasure);
@@ -30,13 +42,10 @@ Worley.MANHATTAN = {
 // cube width and height are always 1,  averagePointsPerCell can be adjusted
 Worley.prototype = {
 
-  distanceMeasure: function() {},
-  distanceMeasure3D: function() {},
-
-  averagePointsPerCell: 1,
-
   initialize: function(averagePointsPerCell, distanceMeasure) {
-    this.averagePointsPerCell = averagePointsPerCell;
+    if (averagePointsPerCell !== undefined) {
+      this.averagePointsPerCell = averagePointsPerCell;
+    }
 
     if(distanceMeasure === undefined) {
       this.distanceMeasure = Worley.EUCLIDIAN.distance2D;
@@ -64,6 +73,26 @@ Worley.prototype = {
     var nthPoint = results[n-1];
     return nthPoint[1] + '-' + nthPoint[2];
   },
+
+  distanceToNthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return nthPoint[0];
+  },
+
+  nthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return [nthPoint[1], nthPoint[2], nthPoint[3]];
+  },
+
+  nthPointId3D: function(evalPointX, evalPointY, evalPointZ, n) {
+    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
+    var nthPoint = results[n-1];
+    return nthPoint[1] + '-' + nthPoint[2] + '-' + nthPoint[3];
+  },
+
+  // private
 
   pointDistComparitor: function(p1, p2) { return p1[0] > p2[0]; },
 
@@ -105,24 +134,6 @@ Worley.prototype = {
         }
       }
     }
-  },
-
-  distanceToNthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
-    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
-    var nthPoint = results[n-1];
-    return nthPoint[0];
-  },
-
-  nthPoint3D: function(evalPointX, evalPointY, evalPointZ, n) {
-    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
-    var nthPoint = results[n-1];
-    return [nthPoint[1], nthPoint[2], nthPoint[3]];
-  },
-
-  nthPointId3D: function(evalPointX, evalPointY, evalPointZ, n) {
-    var results = this.nNearest3D(evalPointX, evalPointY, evalPointZ, n);
-    var nthPoint = results[n-1];
-    return nthPoint[1] + '-' + nthPoint[2] + '-' + nthPoint[3];
   },
 
   nNearest3D: function(evalPointX, evalPointY, evalPointZ, n) {

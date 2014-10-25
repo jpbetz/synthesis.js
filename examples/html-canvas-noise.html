@@ -73,7 +73,7 @@
       },
       {
         canvasName: "worleyNoiseColoring",
-        initialize: function() { return new Worley(5, Worley.EUCLIDIAN); },
+        initialize: function() { return new Worley(5, Worley.MANHATTAN); },
         sample: function(instance, x, y) {
           var id = instance.nthPointId(x/50.0, y/50.0, 1);
           if (id in colorMap) {
