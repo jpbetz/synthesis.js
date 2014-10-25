@@ -44,8 +44,8 @@
     for(var x = 0; x < 500; x++) {
       for(var y = 0; y < 500; y++) {
         var index = (x + y * canvasWidth) * 4;
-        var data = noise.nearestPointWithDistance(x/100.0, y/100.0);
-        var distance = data[1];
+        var distance = noise.distanceToNthPoint(x/100.0, y/100.0, 1);
+        //var distance = noise.distanceToNthPoint(x/100.0, y/100.0, 2) * noise.distanceToNthPoint(x/100.0, y/100.0, 1);
         var value = distance * 255;
         canvasData.data[index + 0] = value; // r
         canvasData.data[index + 1] = value; // g
