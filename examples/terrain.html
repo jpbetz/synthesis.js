@@ -606,11 +606,11 @@ void main()
         gradient: gradient,
         octaves: 8,
         sampleScale: new THREE.Vector3(0.001, 0.001, 0.001),
-        heightAdjust: 100
+        heightAdjust: 300
       });
 
       var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 5000);
+      var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 10000);
       var renderer = new THREE.WebGLRenderer();
 
       var terrainRenderer = new TerrainRenderer(100, 7, noiseMaterial);
@@ -663,9 +663,9 @@ void main()
       dirLight.position.multiplyScalar( 50 );
       scene.add( dirLight );
 
-      pointLight = new THREE.PointLight( 0xffffff, 0.8, 5000 );
-      pointLight.position.set( 0, 600, 0 );
-      pointLight.lookAt(1,1,1);
+      pointLight = new THREE.PointLight( 0xffffff, 0.6, 10000 );
+      pointLight.position.set( 0, 3000, 0 );
+      pointLight.lookAt(0,0,0);
       scene.add( pointLight );
 
       dirLight.castShadow = true;
