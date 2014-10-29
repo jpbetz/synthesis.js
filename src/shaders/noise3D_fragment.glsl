@@ -5,7 +5,7 @@ varying vec3 vectorNormal;
 varying float lightIntensity;
 
 const vec3 seed = vec3(100.0, 100.0, 100.0);
-const vec3 scale = vec3(1.0, 1.0, 1.0);
+const vec3 scale = vec3(0.1, 0.1, 0.1);
 
 
 //
@@ -398,8 +398,11 @@ void main()
 {
   vec3 uvw = mPosition;
   float perlin = octaveNoise(uvw);
-  float worley = Cellular3D(uvw*vec3(5.0, 5.0, 5.0));
-  float n = perlin + worley*0.75;
+  float n = perlin;
+
+  //float worley = Cellular3D(uvw*vec3(5.0, 5.0, 5.0));
+  //float n = perlin + worley*0.75;
+
   vec3 color = colorFromGradient(n);
   color *= lightIntensity;
   gl_FragColor = vec4(color, 1.0);

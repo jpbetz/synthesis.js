@@ -31,7 +31,7 @@ TerrainRenderer.prototype = {
     for (var i = 0; i < selections.length; i++) {
       var selection = selections[i];
       var size = selection.box.size();
-      var geo = new THREE.PlaneGeometry(size.x, size.z, 32 ); // TODO: find way to base rendering on a single geometry and/or mesh
+      var geo = new THREE.PlaneGeometry(size.x, size.z, 64, 64 ); // TODO: find way to base rendering on a single geometry and/or mesh
 
       //var mesh = new THREE.Mesh(geo, this.material);
       var material = this.material !== undefined ? this.material : this.rangeMaterials[selection.lod];

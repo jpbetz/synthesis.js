@@ -51,7 +51,8 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          'examples/shader-noise.html': 'examples/templates/shader-noise-template.html'
+          'examples/shader-noise.html': 'examples/templates/shader-noise-template.html',
+          'examples/terrain.html': 'examples/templates/terrain-template.html'
         }
       }
     }
