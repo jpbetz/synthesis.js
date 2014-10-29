@@ -9,13 +9,10 @@ ShaderNoiseMaterial = function(width, height, params) {
   ]);
 
   pOctaves = params.octaves !== undefined ? params.octaves : 5;
-  sampleOrigin = params.sampleOrigin !== undefined ? params.sampleOrigin : new THREE.Vector3(0,0,0);
-  sampleMultiplier = params.sampleMultiplier !== undefined ? params.sampleMultiplier : 0.05;
   gradient = params.gradient !== undefined ? params.gradient : defaultGradient;
 
-  var x = sampleOrigin.x;
-  var y = sampleOrigin.y;
-  var z = sampleOrigin.z;
+  sampleOrigin = params.sampleOrigin !== undefined ? params.sampleOrigin : new THREE.Vector3(0,0,0);
+  sampleScale = params.sampleScale !== undefined ? params.sampleScale : new THREE.Vector3(0.01, 0.01, 0.01);
 
   THREE.ShaderMaterial.call(this, {
     uniforms: THREE.UniformsUtils.merge([
@@ -23,7 +20,7 @@ ShaderNoiseMaterial = function(width, height, params) {
       {
         octaves: { type: "1i", value: pOctaves },
         sampleOrigin: { type: "v3", value: sampleOrigin },
-        sampleMultiplier: { type: "3fv", value: sampleMultiplier }
+        sampleScale: { type: "v3", value: sampleScale }
 	    }
     ]),
 	  vertexShader: vertexShader,

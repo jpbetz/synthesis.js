@@ -4,9 +4,8 @@ varying vec3 vectorNormal;
 
 varying float lightIntensity;
 
-const vec3 seed = vec3(100.0, 100.0, 100.0);
-const vec3 scale = vec3(0.1, 0.1, 0.1);
-
+uniform vec3 sampleOrigin;
+uniform vec3 sampleScale;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
@@ -109,7 +108,7 @@ float snoise(vec3 v) {
 }
 
 float octaveNoise(vec3 p) {
-  p = scale * (seed + p);
+  p = sampleScale * (sampleOrigin + p);
   float n = snoise(p);
   n += 0.5 * snoise(p * 2.0);
   n += 0.25 * snoise(p * 4.0);
@@ -397,13 +396,15 @@ vec3 colorFromGradient(float n) {
 void main()
 {
   vec3 uvw = mPosition;
-  float perlin = octaveNoise(uvw);
-  float n = perlin;
+  //float perlin = octaveNoise(uvw);
+  //float n = perlin;
 
   //float worley = Cellular3D(uvw*vec3(5.0, 5.0, 5.0));
   //float n = perlin + worley*0.75;
 
-  vec3 color = colorFromGradient(n);
+  //vec3 color = colorFromGradient(n);
+  vec3 color = vec3(0.5, 0.5, 0.5);
+
   color *= lightIntensity;
   gl_FragColor = vec4(color, 1.0);
 }

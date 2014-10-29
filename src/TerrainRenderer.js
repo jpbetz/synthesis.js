@@ -2,6 +2,7 @@ TerrainRenderer = function(tileSize, levelsOfDetail, material) {
   this.tileSize = tileSize === undefined ? 1 : tileSize;
   this.levelsOfDetail = levelsOfDetail === undefined ? 5 : levelsOfDetail;
   this.material = material;
+  this.geometry = new THREE.PlaneGeometry(1, 1, 127, 127 ); // TODO: make resolution configurable
 
   this.ranges = [];
   this.rangeMaterials = [];
@@ -31,11 +32,12 @@ TerrainRenderer.prototype = {
     for (var i = 0; i < selections.length; i++) {
       var selection = selections[i];
       var size = selection.box.size();
-      var geo = new THREE.PlaneGeometry(size.x, size.z, 64, 64 ); // TODO: find way to base rendering on a single geometry and/or mesh
 
       //var mesh = new THREE.Mesh(geo, this.material);
       var material = this.material !== undefined ? this.material : this.rangeMaterials[selection.lod];
-      var mesh = new THREE.Mesh(geo, material);
+      var mesh = new THREE.Mesh(this.geometry, material);
+      mesh.scale.set(size.x, size.z, 1);
+      //mesh.matrixAutoUpdate;
 
       mesh.position.add(new THREE.Vector3(selection.box.min.x + size.x/2, 0, selection.box.min.z + size.z/2));
       //console.log("Adding LOD mesh: { size: { x: " + size.x + ", y: " + size.y + ", z: " + size.z + "}, position: { x: " + mesh.position.x + ", y: " + mesh.position.y + ", z: " + mesh.position.z + "}}");
