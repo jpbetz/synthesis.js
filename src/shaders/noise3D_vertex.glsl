@@ -1,5 +1,6 @@
 varying vec3 mPosition;
 varying float lightIntensity;
+varying float height;
 
 uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
 uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
@@ -10,6 +11,7 @@ const float DiffuseContribution = 1.0 - SpecularContribution;
 
 uniform vec3 sampleOrigin;
 uniform vec3 sampleScale;
+uniform float heightAdjust;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
@@ -131,7 +133,8 @@ void main()
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   mPosition = modelPosition.xyz;
 
-  modelPosition.y += octaveNoise(modelPosition.xyz) * 20.0;
+  height = octaveNoise(modelPosition.xyz);
+  modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;
   vec3 ecPosition3 = ecPosition.xyz;

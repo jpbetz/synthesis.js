@@ -11,6 +11,7 @@
 
     <script src="../src/shaders/noise3D_fragment.glsl" id="noise3D_vertex" type="x-shader/x-vertex">varying vec3 mPosition;
 varying float lightIntensity;
+varying float height;
 
 uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
 uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
@@ -21,6 +22,7 @@ const float DiffuseContribution = 1.0 - SpecularContribution;
 
 uniform vec3 sampleOrigin;
 uniform vec3 sampleScale;
+uniform float heightAdjust;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
@@ -142,7 +144,8 @@ void main()
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   mPosition = modelPosition.xyz;
 
-  modelPosition.y += octaveNoise(modelPosition.xyz) * 20.0;
+  height = octaveNoise(modelPosition.xyz);
+  modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;
   vec3 ecPosition3 = ecPosition.xyz;
@@ -183,6 +186,7 @@ void main()
     <script src="../src/shaders/noise3D_vertex.glsl" id="noise3D_fragment" type="x-shader/x-fragment">varying vec3 mPosition;
 varying vec3 vectorPosition;
 varying vec3 vectorNormal;
+varying float height;
 
 varying float lightIntensity;
 
@@ -585,7 +589,7 @@ void main()
   //float n = perlin + worley*0.75;
 
   //vec3 color = colorFromGradient(n);
-  vec3 color = vec3(0.5, 0.5, 0.5);
+  vec3 color = colorFromGradient(height);
 
   color *= lightIntensity;
   gl_FragColor = vec4(color, 1.0);
@@ -598,13 +602,18 @@ void main()
         {x: 1, color: new THREE.Color(0.5,1,0.5)}
       ]);
 
-      var noiseMaterial = new ShaderNoiseMaterial(100, 100, { gradient: gradient, octaves: 8 });
+      var noiseMaterial = new ShaderNoiseMaterial(100, 100, {
+        gradient: gradient,
+        octaves: 8,
+        sampleScale: new THREE.Vector3(0.001, 0.001, 0.001),
+        heightAdjust: 100
+      });
 
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 5000);
       var renderer = new THREE.WebGLRenderer();
 
-      var terrainRenderer = new TerrainRenderer(100, 5, noiseMaterial);
+      var terrainRenderer = new TerrainRenderer(100, 7, noiseMaterial);
       //var terrainRenderer = new TerrainRenderer(100, 5);
       var simplex = new Simplex();
 
@@ -627,20 +636,6 @@ void main()
 
         lodPlane = terrainRenderer.generateLodPlane(camera.position, frustum);
         scene.add(lodPlane);
-        /*var meshes = lodPlane.children;
-        for(var m = 0; m < meshes.length; m++) {
-          var mesh = meshes[m];
-          var vertices = mesh.geometry.vertices;
-          var pos = mesh.position;
-          for(var v = 0; v < vertices.length; v++) {
-            var vertex = vertices[v];
-            var x = pos.x + vertex.x;
-            var y = pos.z + vertex.y;
-            var noise = simplex.getOctaveNoise(x, y, 0, 8)*100;
-            vertex.z = noise;
-            mesh.geometry.verticesNeedUpdate = true;
-          }
-        }*/
         renderer.render(scene, camera);
       }
 
@@ -652,8 +647,8 @@ void main()
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      camera.position.add(new THREE.Vector3(0, 30, 0));
-      camera.lookAt(new THREE.Vector3(1, 1, 1));
+      camera.position.add(new THREE.Vector3(50, 30, 50));
+      camera.lookAt(new THREE.Vector3(100, 80, 100));
 
       // LIGHTS
       hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
@@ -668,8 +663,8 @@ void main()
       dirLight.position.multiplyScalar( 50 );
       scene.add( dirLight );
 
-      pointLight = new THREE.PointLight( 0xffffff, 0.8, 3000 );
-      pointLight.position.set( 0, 300, 0 );
+      pointLight = new THREE.PointLight( 0xffffff, 0.8, 5000 );
+      pointLight.position.set( 0, 600, 0 );
       pointLight.lookAt(1,1,1);
       scene.add( pointLight );
 
@@ -690,8 +685,8 @@ void main()
       dirLight.shadowDarkness = 0.35;
 
       // The X axis is red. The Y axis is green. The Z axis is blue.
-      var axisHelper = new THREE.AxisHelper( 5 );
-      scene.add( axisHelper );
+      //var axisHelper = new THREE.AxisHelper( 5 );
+      //scene.add( axisHelper );
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.userPan = false;

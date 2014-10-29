@@ -2,7 +2,7 @@ TerrainRenderer = function(tileSize, levelsOfDetail, material) {
   this.tileSize = tileSize === undefined ? 1 : tileSize;
   this.levelsOfDetail = levelsOfDetail === undefined ? 5 : levelsOfDetail;
   this.material = material;
-  this.geometry = new THREE.PlaneGeometry(1, 1, 127, 127 ); // TODO: make resolution configurable
+  this.geometry = new THREE.PlaneGeometry(1, 1, 64, 64 ); // TODO: make resolution configurable
 
   this.ranges = [];
   this.rangeMaterials = [];

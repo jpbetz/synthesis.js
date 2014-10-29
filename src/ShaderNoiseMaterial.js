@@ -13,12 +13,14 @@ ShaderNoiseMaterial = function(width, height, params) {
 
   sampleOrigin = params.sampleOrigin !== undefined ? params.sampleOrigin : new THREE.Vector3(0,0,0);
   sampleScale = params.sampleScale !== undefined ? params.sampleScale : new THREE.Vector3(0.01, 0.01, 0.01);
+  heightAdjust = params.heightAdjust !== undefined ? params.heightAdjust : 0;
 
   THREE.ShaderMaterial.call(this, {
     uniforms: THREE.UniformsUtils.merge([
       THREE.UniformsLib.lights,
       {
         octaves: { type: "1i", value: pOctaves },
+        heightAdjust: { type: "1f", value: heightAdjust },
         sampleOrigin: { type: "v3", value: sampleOrigin },
         sampleScale: { type: "v3", value: sampleScale }
 	    }

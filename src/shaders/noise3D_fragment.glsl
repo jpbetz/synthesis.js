@@ -1,6 +1,7 @@
 varying vec3 mPosition;
 varying vec3 vectorPosition;
 varying vec3 vectorNormal;
+varying float height;
 
 varying float lightIntensity;
 
@@ -403,7 +404,7 @@ void main()
   //float n = perlin + worley*0.75;
 
   //vec3 color = colorFromGradient(n);
-  vec3 color = vec3(0.5, 0.5, 0.5);
+  vec3 color = colorFromGradient(height);
 
   color *= lightIntensity;
   gl_FragColor = vec4(color, 1.0);
