@@ -10,11 +10,10 @@ and [three.js](http://threejs.org/).
 Core:
 
 * Randomness - random distribution utilities (uniform, gaussian, power law)
-* Consistent Noise - consistent noise algorithms,  e.g. terrain, water
+* Consistent Noise - consistent noise algorithms (simplex noise, worley noise)
 * L-Systems - self-similar structures, e.g. trees, plants
-* Marching Cubes - meshes from scalar fields, e.g. caves, coral reefs
-* Color - coordinated colors, e.g. gradients, palettes
-* Mesh Skeletons (planned)
+* Marching Cubes - produces meshes from scalar fields, e.g. caves, coral reefs
+* Color - color palette generator (complementary, split complementary, etc..)
 
 Application libraries:
 
@@ -93,6 +92,12 @@ For an example l-system, see examples/trees.html
 
 
 TODO:
+
+* [ ] Add atmosphere example
+* [ ] Add glsl noise texture generator (2D and 3D)
+* [ ] Add turbulence noise from http://www.decarpentier.nl/scape-procedural-extensions
+
+* [ ] Clean up examples.
 
 * [ ] Clean up Color converter to use classes, add a lerp operation to new HCLColor class
 * [ ] Update Gradient generator to use HCL, should better for lerp than RGB
