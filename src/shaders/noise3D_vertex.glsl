@@ -178,14 +178,15 @@ void main()
   // vertex in view space
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-  // lod morphing
-  if(mod(coordinate.x, 2.0) == 1.0 || mod(coordinate.y, 2.0) == 1.0) {
+  // lod morphing, uncomment to enable morphing
+
+  /*if(mod(coordinate.x, 2.0) == 1.0 || mod(coordinate.y, 2.0) == 1.0) {
     modelPosition = morphVertexInWorld(position, modelPosition); // TODO: add check and only morph if an odd numbered x or y coord?
-  }
+  }*/
 
   mPosition = modelPosition.xyz;
 
-  height = octaveNoise(modelPosition.xyz) * 0.0;
+  height = octaveNoise(modelPosition.xyz) * 1.0; // set to 0.0 to examine mesh lod without terrain
   modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;
