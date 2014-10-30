@@ -15,6 +15,10 @@ Core:
 * Marching Cubes - produces meshes from scalar fields, e.g. caves, coral reefs
 * Color - color palette generator (complementary, split complementary, etc..)
 
+Rendering:
+
+* Heightmap Level-of-Detail Rendering - CDLOD implementation for rendering large heightmaps.
+
 Application libraries:
 
 * Trees
@@ -93,6 +97,11 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
+* [ ] Fix pop in LOD morphing.   Happens because node's LOD range has increase, is now working on inner boundery?   This might be because I'm putting in lower LOD fillers for childern in the quad tree...  Looks
+like I'll need a lower resolution grid to use in these positions.
+
+* [ ] Clean up shader code.
+* [ ] Make separate material for CDLOD.
 * [ ] Add atmosphere example
 * [ ] Add glsl noise texture generator (2D and 3D)
 * [ ] Add turbulence noise from http://www.decarpentier.nl/scape-procedural-extensions

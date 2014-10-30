@@ -13,7 +13,7 @@ uniform vec3 sampleOrigin;
 uniform vec3 sampleScale;
 uniform float heightAdjust;
 uniform vec2 quadScale;
-uniform vec3 miscGridDimensions;
+uniform float gridDimension;
 uniform int lod;
 uniform float lodRange;
 
@@ -132,13 +132,11 @@ float octaveNoise(vec3 p) {
   return n;
 }
 
-const float morphStart = 0.7;
-const float morphArea = 1.0-0.7;
-
 float findMorphK(float distance)
 {
-  float morphStart = 0.7*lodRange; // 30% morph range
-  return clamp((distance-morphStart)/(lodRange-morphStart), 0.0, 1.0);
+  float morphStart = 0.8*lodRange;
+  float morphEnd = 0.95*lodRange;
+  return clamp((distance-morphStart)/(morphEnd-morphStart), 0.0, 1.0);
 }
 
 // morphs input vertex uv from high to low detailed mesh position
@@ -151,10 +149,10 @@ vec2 morphVertex(vec2 vertex, float morphLerpK)
   // code using pre-calculated grid dimension values
 
   // TODO:  !!!! had to use .yx here because my planes are upside down so the coordinates are inverted... ugh!!!
-  vec2 fracPart = fract(coordinate.yx * 0.5) * 2.0/miscGridDimensions.xx;
+  vec2 fracPart = fract(coordinate.yx * 0.5) * 2.0/gridDimension;
 
-  // TODO:  why does *miscGridDimensions.xx scale things correctly here?
-  return vertex - (fracPart * quadScale.xy*miscGridDimensions.xx * morphLerpK);
+  // TODO:  why does *gridDimension scale things correctly here?
+  return vertex - (fracPart * quadScale.xy*gridDimension * morphLerpK);
 
   //return vec2(vertex.x + quadScale.x * morphLerpK, vertex.y - quadScale.y * morphLerpK);
 }
@@ -183,7 +181,7 @@ void main()
 
   mPosition = modelPosition.xyz;
 
-  height = octaveNoise(modelPosition.xyz) * 0.5; // set to 0.0 to examine mesh lod without terrain
+  height = octaveNoise(modelPosition.xyz) * 1.0; // set to 0.0 to examine mesh lod without terrain
   modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;

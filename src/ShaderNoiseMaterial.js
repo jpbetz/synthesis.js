@@ -15,14 +15,14 @@ ShaderNoiseMaterial = function(params) {
   sampleScale = params.sampleScale !== undefined ? params.sampleScale : new THREE.Vector3(0.01, 0.01, 0.01);
   heightAdjust = params.heightAdjust !== undefined ? params.heightAdjust : 0;
   quadScale = params.quadScale !== undefined ? params.quadScale : new THREE.Vector2(1, 1);
-  miscGridDimensions = params.miscGridDimensions !== undefined ? params.miscGridDimensions : new THREE.Vector2(64, 32, 1/32);
+  gridDimension = params.gridDimension !== undefined ? params.gridDimension : 64;
   lod = params.lod !== undefined ? params.lod : 0;
   lodRange = params.lodRange !== undefined ? params.lodRange : 0;
 
   // TODO: this could be wrong, might need to use a Float32Array
   var coordinates = [];
-  for(var x = 0; x <= miscGridDimensions.x; x++) {
-    for(var y = 0; y <= miscGridDimensions.x; y++) {
+  for(var x = 0; x <= gridDimension; x++) {
+    for(var y = 0; y <= gridDimension; y++) {
       coordinates.push(new THREE.Vector2(x, y));
     }
   }
@@ -36,7 +36,7 @@ ShaderNoiseMaterial = function(params) {
         sampleOrigin: { type: "v3", value: sampleOrigin },
         sampleScale: { type: "v3", value: sampleScale },
         quadScale: { type: "v2", value: quadScale},
-        miscGridDimensions: { type: "v3", value: miscGridDimensions},
+        gridDimension: { type: "1f", value: gridDimension},
         lod: { type: "1i", value: lod},
         lodRange: { type: "1f", value: lodRange}
 	    }
@@ -46,7 +46,7 @@ ShaderNoiseMaterial = function(params) {
     },
 	  vertexShader: vertexShader,
 	  fragmentShader: fragmentShader,
-    lights: true
+    lights: true,
     //wireframe: true
   });
   this.needsUpdate = true;

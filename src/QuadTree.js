@@ -71,7 +71,7 @@ QuadNode.prototype = {
     }
     if(lodLevel === 0) {
       // add whole node to selected list
-      selection.push({ box: this.boundingBox, lod: lodLevel });
+      selection.push({ box: this.boundingBox, lod: lodLevel, grid: 1.0 });
       return true;
     }
     else {
@@ -82,13 +82,13 @@ QuadNode.prototype = {
             // child was not in range for higher LOD, add child node's bounding box
             // to selection list at current node's LOD
             //selection.push({ box: child.boundingBox, lod: lodLevel });
-            selection.push({ box: child.boundingBox, lod: lodLevel-1 }); // TODO: review this change,  is it really correct to add box at lodLevel-1 ?
+            selection.push({ box: child.boundingBox, lod: lodLevel, grid: 0.5 }); // TODO: review this change,  is it really correct to add box at lodLevel-1 ?
           }
         }
       }
       else {
         // add whole node to selected list
-        selection.push({ box: this.boundingBox, lod: lodLevel });
+        selection.push({ box: this.boundingBox, lod: lodLevel, grid: 1.0 });
       }
       return true;
     }
