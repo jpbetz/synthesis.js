@@ -70,7 +70,7 @@
         {x: 1, color: new THREE.Color(0.5,1,0.5)}
       ]);
 
-      var noiseMaterial = new ShaderNoiseMaterial(100, 100, { gradient: gradient, octaves: 8 });
+      var noiseMaterial = new ShaderNoiseMaterial({ gradient: gradient, octaves: 8 });
       var noiseGeometry = new THREE.SphereGeometry(5, 128, 128);
       var noiseMesh = new THREE.Mesh(noiseGeometry, noiseMaterial);
 

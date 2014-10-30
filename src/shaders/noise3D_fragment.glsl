@@ -393,7 +393,6 @@ vec3 colorFromGradient(float n) {
   }
 }
 
-
 void main()
 {
   vec3 uvw = mPosition;

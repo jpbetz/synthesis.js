@@ -23,6 +23,12 @@ const float DiffuseContribution = 1.0 - SpecularContribution;
 uniform vec3 sampleOrigin;
 uniform vec3 sampleScale;
 uniform float heightAdjust;
+uniform vec2 quadScale;
+uniform vec3 miscGridDimensions;
+uniform int lod;
+uniform float lodRange;
+
+attribute vec2 coordinate;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex
@@ -137,19 +143,64 @@ float octaveNoise(vec3 p) {
   return n;
 }
 
+// morphs input vertex uv from high to low detailed mesh position
+// - gridPos: normalized [0, 1] .xy grid position of the source vertex
+// - vertex: vertex.xy components in the world space
+// - morphK: [0..1] ranges from 0 (no morph, high detail) to 1 (full morph, 4x fewer triangles)
+vec2 morphVertex(vec2 gridPos, vec2 vertex, float morphLerpK)
+{
+  // based on: http://www.vertexasylum.com/downloads/cdlod/cdlod_latest.pdf, but using the optimized
+  // code using pre-calculated grid dimension values
+
+  // miscGridDimensions.y is 0.5*dimension of the grid
+  // miscGridDimensions.z is 1/(0.5*dimension) of the grid
+
+  vec2 fracPart = (fract(gridPos * miscGridDimensions.xx * 0.5) * 2.0/miscGridDimensions.xx);
+  //return vertex - clamp(fracPart, 0.0, 1.0) * quadScale.xy * morphLerpK;
+
+  return vec2(vertex.x + quadScale.x * morphLerpK, vertex.y - quadScale.y * morphLerpK);
+}
+
+const float morphStart = 0.7;
+const float morphArea = 1.0-0.7;
+
+float findMorphK(float distance)
+{
+  float morphStart = 0.7*lodRange; // 30% morph range
+  return clamp((distance-morphStart)/(lodRange-morphStart), 0.0, 1.0);
+}
+
+vec4 morphVertexInWorld(vec3 position, vec4 vertex)
+{
+  float distance = length(vec3(viewMatrix * vertex));
+  float morphK = findMorphK(distance);
+  vec2 gridPos = normalize(position.xy);
+  vec2 morphed = morphVertex(gridPos, vertex.xz, morphK);
+
+  return vec4(morphed.x, vertex.y, morphed.y, vertex.w); // for testing
+  //return vec4(morphed.x, morphed.y, vertex.z, vertex.w); // correct
+
+  //vertex.z += morphK * 2.0 + float(lod) * 2.0; // for testing distance line and continuity
+  //return vertex;
+}
+
 void main()
 {
   // vertex in view space
-
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+  // lod morphing
+  if(mod(coordinate.x, 2.0) == 1.0 || mod(coordinate.y, 2.0) == 1.0) {
+    modelPosition = morphVertexInWorld(position, modelPosition); // TODO: add check and only morph if an odd numbered x or y coord?
+  }
+
   mPosition = modelPosition.xyz;
 
-  height = octaveNoise(modelPosition.xyz);
+  height = octaveNoise(modelPosition.xyz) * 0.0;
   modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;
   vec3 ecPosition3 = ecPosition.xyz;
-
 
   // normal in view space
   vec3 tnorm = normalize(normalMatrix * normal);
@@ -578,7 +629,6 @@ vec3 colorFromGradient(float n) {
   }
 }
 
-
 void main()
 {
   vec3 uvw = mPosition;
@@ -597,24 +647,11 @@ void main()
 </script>
 
     <script>
-      var gradient = new Gradient([
-        {x: 0, color: new THREE.Color(0.5,0.5,1)},
-        {x: 1, color: new THREE.Color(0.5,1,0.5)}
-      ]);
-
-      var noiseMaterial = new ShaderNoiseMaterial(100, 100, {
-        gradient: gradient,
-        octaves: 8,
-        sampleScale: new THREE.Vector3(0.001, 0.001, 0.001),
-        heightAdjust: 300
-      });
-
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 10000);
       var renderer = new THREE.WebGLRenderer();
 
-      var terrainRenderer = new TerrainRenderer(100, 7, noiseMaterial);
-      //var terrainRenderer = new TerrainRenderer(100, 5);
+      var terrainRenderer = new TerrainRenderer(100, 7, 8);
       var simplex = new Simplex();
 
       var lodPlane;

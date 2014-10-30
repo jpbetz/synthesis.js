@@ -13,24 +13,11 @@
     <script src="../src/shaders/noise3D_vertex.glsl" id="noise3D_fragment" type="x-shader/x-fragment">@{noise3Dglsl_fragment}@</script>
 
     <script>
-      var gradient = new Gradient([
-        {x: 0, color: new THREE.Color(0.5,0.5,1)},
-        {x: 1, color: new THREE.Color(0.5,1,0.5)}
-      ]);
-
-      var noiseMaterial = new ShaderNoiseMaterial(100, 100, {
-        gradient: gradient,
-        octaves: 8,
-        sampleScale: new THREE.Vector3(0.001, 0.001, 0.001),
-        heightAdjust: 300
-      });
-
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 10000);
       var renderer = new THREE.WebGLRenderer();
 
-      var terrainRenderer = new TerrainRenderer(100, 7, noiseMaterial);
-      //var terrainRenderer = new TerrainRenderer(100, 5);
+      var terrainRenderer = new TerrainRenderer(100, 7, 8);
       var simplex = new Simplex();
 
       var lodPlane;

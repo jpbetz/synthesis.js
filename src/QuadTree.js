@@ -62,7 +62,8 @@ QuadNode.prototype = {
   },
 
   lodSelectAcc: function(ranges, lodLevel, cameraPos, frustum, selection) {
-    if(this.boundingBox.distanceToPoint(cameraPos) >= ranges[lodLevel]) {
+    var distanceToPoint = this.boundingBox.distanceToPoint(cameraPos);
+    if(distanceToPoint >= ranges[lodLevel]) {
       return false; // no node or child nodes were selected, parent should handle area
     }
     if(!frustum.intersectsBox(this.boundingBox)) {
@@ -74,11 +75,7 @@ QuadNode.prototype = {
       return true;
     }
     else {
-      if(this.boundingBox.distanceToPoint(cameraPos) >= ranges[lodLevel-1])  {
-        // add whole node to selected list
-        selection.push({ box: this.boundingBox, lod: lodLevel });
-      }
-      else {
+      if(distanceToPoint < ranges[lodLevel-1])  {
         for (var i = 0; i < this.children.length; i++) {
           var child = this.children[i];
           if(!child.lodSelectAcc(ranges, lodLevel-1, cameraPos, frustum, selection)) {
@@ -87,6 +84,10 @@ QuadNode.prototype = {
             selection.push({ box: child.boundingBox, lod: lodLevel });
           }
         }
+      }
+      else {
+        // add whole node to selected list
+        selection.push({ box: this.boundingBox, lod: lodLevel });
       }
       return true;
     }

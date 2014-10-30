@@ -1,4 +1,4 @@
-ShaderNoiseMaterial = function(width, height, params) {
+ShaderNoiseMaterial = function(params) {
 
   var vertexShader = document.getElementById('noise3D_vertex').innerHTML;
   var fragmentShader = document.getElementById('noise3D_fragment').innerHTML;
@@ -14,6 +14,18 @@ ShaderNoiseMaterial = function(width, height, params) {
   sampleOrigin = params.sampleOrigin !== undefined ? params.sampleOrigin : new THREE.Vector3(0,0,0);
   sampleScale = params.sampleScale !== undefined ? params.sampleScale : new THREE.Vector3(0.01, 0.01, 0.01);
   heightAdjust = params.heightAdjust !== undefined ? params.heightAdjust : 0;
+  quadScale = params.quadScale !== undefined ? params.quadScale : new THREE.Vector2(1, 1);
+  miscGridDimensions = params.miscGridDimensions !== undefined ? params.miscGridDimensions : new THREE.Vector2(64, 32, 1/32);
+  lod = params.lod !== undefined ? params.lod : 0;
+  lodRange = params.lodRange !== undefined ? params.lodRange : 0;
+
+  // TODO: this could be wrong, might need to use a Float32Array
+  var coordinates = [];
+  for(var x = 0; x <= miscGridDimensions.x; x++) {
+    for(var y = 0; y <= miscGridDimensions.x; y++) {
+      coordinates.push(new THREE.Vector2(x, y));
+    }
+  }
 
   THREE.ShaderMaterial.call(this, {
     uniforms: THREE.UniformsUtils.merge([
@@ -22,12 +34,20 @@ ShaderNoiseMaterial = function(width, height, params) {
         octaves: { type: "1i", value: pOctaves },
         heightAdjust: { type: "1f", value: heightAdjust },
         sampleOrigin: { type: "v3", value: sampleOrigin },
-        sampleScale: { type: "v3", value: sampleScale }
+        sampleScale: { type: "v3", value: sampleScale },
+        quadScale: { type: "v2", value: quadScale},
+        miscGridDimensions: { type: "v3", value: miscGridDimensions},
+        lod: { type: "1i", value: lod},
+        lodRange: { type: "1f", value: lodRange}
 	    }
     ]),
+    attributes: {
+      coordinate: { type: 'v2', value: coordinates }
+    },
 	  vertexShader: vertexShader,
 	  fragmentShader: fragmentShader,
-    lights: true
+    lights: true,
+    wireframe: true
   });
   this.needsUpdate = true;
 };
@@ -35,7 +55,7 @@ ShaderNoiseMaterial = function(width, height, params) {
 ShaderNoiseMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
 ShaderNoiseMaterial.prototype.clone = function () {
-  var texture = new ShaderNoiseMaterial(width, height, params);
+  var texture = new ShaderNoiseMaterial(params);
   THREE.ShaderMaterial.prototype.clone.call( this, texture );
   return texture;
 };
