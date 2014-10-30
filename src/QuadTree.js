@@ -80,9 +80,11 @@ QuadNode.prototype = {
           var child = this.children[i];
           if(!child.lodSelectAcc(ranges, lodLevel-1, cameraPos, frustum, selection)) {
             // child was not in range for higher LOD, add child node's bounding box
-            // to selection list at current node's LOD
-            //selection.push({ box: child.boundingBox, lod: lodLevel });
-            selection.push({ box: child.boundingBox, lod: lodLevel, grid: 0.5 }); // TODO: review this change,  is it really correct to add box at lodLevel-1 ?
+            // to selection list at current node's LOD.
+
+            // The 0.5 grid here means that the grid dimension of this node should be 1/2 the standard
+            // grid dimension.  This is a fill node where at least one sibling node is higher detail.
+            selection.push({ box: child.boundingBox, lod: lodLevel, grid: 0.5 });
           }
         }
       }

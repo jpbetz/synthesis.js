@@ -97,8 +97,7 @@ For an example l-system, see examples/trees.html
 
 TODO:
 
-* [ ] Fix pop in LOD morphing.   Happens because node's LOD range has increase, is now working on inner boundery?   This might be because I'm putting in lower LOD fillers for childern in the quad tree...  Looks
-like I'll need a lower resolution grid to use in these positions.
+* [ ] Fix artifact in LOD rendering.
 
 * [ ] Clean up shader code.
 * [ ] Make separate material for CDLOD.
