@@ -194,7 +194,7 @@ void main()
 
   mPosition = modelPosition.xyz;
 
-  height = octaveNoise(modelPosition.xyz) * 1.0; // set to 0.0 to examine mesh lod without terrain
+  height = octaveNoise(modelPosition.xyz) * 0.5; // set to 0.0 to examine mesh lod without terrain
   modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;

@@ -194,7 +194,7 @@ void main()
 
   mPosition = modelPosition.xyz;
 
-  height = octaveNoise(modelPosition.xyz) * 1.0; // set to 0.0 to examine mesh lod without terrain
+  height = octaveNoise(modelPosition.xyz) * 0.5; // set to 0.0 to examine mesh lod without terrain
   modelPosition.y += height * heightAdjust;
 
   vec4 ecPosition = viewMatrix * modelPosition;
@@ -720,8 +720,8 @@ void main()
       dirLight.shadowDarkness = 0.35;
 
       // The X axis is red. The Y axis is green. The Z axis is blue.
-      var axisHelper = new THREE.AxisHelper( 5 );
-      scene.add( axisHelper );
+      //var axisHelper = new THREE.AxisHelper( 5 );
+      //scene.add( axisHelper );
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.userPan = false;

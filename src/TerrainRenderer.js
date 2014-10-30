@@ -19,6 +19,7 @@ TerrainRenderer = function(tileSize, levelsOfDetail, gridDimension) {
     var material = new ShaderNoiseMaterial({
       octaves: 8,
       sampleScale: new THREE.Vector3(0.001, 0.001, 0.001),
+      sampleOrigin: new THREE.Vector3(100, 5, 1),
       heightAdjust: 300,
       quadScale: new THREE.Vector2(quadSize, quadSize),
       lod: lod,
