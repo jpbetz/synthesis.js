@@ -14,10 +14,10 @@
 
     <script>
       var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 10000);
+      var camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.01, 10000);
       var renderer = new THREE.WebGLRenderer();
 
-      var terrainRenderer = new TerrainRenderer(100, 7, 8);
+      var terrainRenderer = new TerrainRenderer(100, 7, 128);
       var simplex = new Simplex();
 
       var lodPlane;
@@ -88,8 +88,8 @@
       dirLight.shadowDarkness = 0.35;
 
       // The X axis is red. The Y axis is green. The Z axis is blue.
-      //var axisHelper = new THREE.AxisHelper( 5 );
-      //scene.add( axisHelper );
+      var axisHelper = new THREE.AxisHelper( 5 );
+      scene.add( axisHelper );
 
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.userPan = false;

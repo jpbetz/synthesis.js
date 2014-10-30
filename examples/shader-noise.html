@@ -143,24 +143,6 @@ float octaveNoise(vec3 p) {
   return n;
 }
 
-// morphs input vertex uv from high to low detailed mesh position
-// - gridPos: normalized [0, 1] .xy grid position of the source vertex
-// - vertex: vertex.xy components in the world space
-// - morphK: [0..1] ranges from 0 (no morph, high detail) to 1 (full morph, 4x fewer triangles)
-vec2 morphVertex(vec2 gridPos, vec2 vertex, float morphLerpK)
-{
-  // based on: http://www.vertexasylum.com/downloads/cdlod/cdlod_latest.pdf, but using the optimized
-  // code using pre-calculated grid dimension values
-
-  // miscGridDimensions.y is 0.5*dimension of the grid
-  // miscGridDimensions.z is 1/(0.5*dimension) of the grid
-
-  vec2 fracPart = (fract(gridPos * miscGridDimensions.xx * 0.5) * 2.0/miscGridDimensions.xx);
-  //return vertex - clamp(fracPart, 0.0, 1.0) * quadScale.xy * morphLerpK;
-
-  return vec2(vertex.x + quadScale.x * morphLerpK, vertex.y - quadScale.y * morphLerpK);
-}
-
 const float morphStart = 0.7;
 const float morphArea = 1.0-0.7;
 
@@ -170,18 +152,33 @@ float findMorphK(float distance)
   return clamp((distance-morphStart)/(lodRange-morphStart), 0.0, 1.0);
 }
 
-vec4 morphVertexInWorld(vec3 position, vec4 vertex)
+// morphs input vertex uv from high to low detailed mesh position
+// - gridPos: normalized [0, 1] .xy grid position of the source vertex (e.g., a (2,3) or a (4,4) would be (0.5, 0.75))
+// - vertex: vertex.xy components in the world space
+// - morphK: [0..1] ranges from 0 (no morph, high detail) to 1 (full morph, 4x fewer triangles)
+vec2 morphVertex(vec2 vertex, float morphLerpK)
 {
-  float distance = length(vec3(viewMatrix * vertex));
+  // based on: http://www.vertexasylum.com/downloads/cdlod/cdlod_latest.pdf, but using the optimized
+  // code using pre-calculated grid dimension values
+
+  // TODO:  !!!! had to use .yx here because my planes are upside down so the coordinates are inverted... ugh!!!
+  vec2 fracPart = fract(coordinate.yx * 0.5) * 2.0/miscGridDimensions.xx;
+
+  // TODO:  why does *miscGridDimensions.xx scale things correctly here?
+  return vertex - (fracPart * quadScale.xy*miscGridDimensions.xx * morphLerpK);
+
+  //return vec2(vertex.x + quadScale.x * morphLerpK, vertex.y - quadScale.y * morphLerpK);
+}
+
+vec4 morphVertexInWorld(vec4 vertex)
+{
+  vec4 groundVertex = vec4(vertex.x, 0.0, vertex.z, vertex.w);
+  vec3 viewVector = vec3(viewMatrix * groundVertex);
+  float distance = length(viewVector);
   float morphK = findMorphK(distance);
-  vec2 gridPos = normalize(position.xy);
-  vec2 morphed = morphVertex(gridPos, vertex.xz, morphK);
+  vec2 morphed = morphVertex(vertex.xz, morphK);
 
-  return vec4(morphed.x, vertex.y, morphed.y, vertex.w); // for testing
-  //return vec4(morphed.x, morphed.y, vertex.z, vertex.w); // correct
-
-  //vertex.z += morphK * 2.0 + float(lod) * 2.0; // for testing distance line and continuity
-  //return vertex;
+  return vec4(morphed.x, vertex.y, morphed.y, vertex.w);
 }
 
 void main()
@@ -191,9 +188,9 @@ void main()
 
   // lod morphing, uncomment to enable morphing
 
-  /*if(mod(coordinate.x, 2.0) == 1.0 || mod(coordinate.y, 2.0) == 1.0) {
-    modelPosition = morphVertexInWorld(position, modelPosition); // TODO: add check and only morph if an odd numbered x or y coord?
-  }*/
+  if(mod(coordinate.x, 2.0) == 1.0 || mod(coordinate.y, 2.0) == 1.0) {
+    modelPosition = morphVertexInWorld(modelPosition);
+  }
 
   mPosition = modelPosition.xyz;
 

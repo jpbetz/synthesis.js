@@ -46,8 +46,8 @@ ShaderNoiseMaterial = function(params) {
     },
 	  vertexShader: vertexShader,
 	  fragmentShader: fragmentShader,
-    lights: true,
-    wireframe: true
+    lights: true
+    //wireframe: true
   });
   this.needsUpdate = true;
 };

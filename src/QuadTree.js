@@ -81,7 +81,8 @@ QuadNode.prototype = {
           if(!child.lodSelectAcc(ranges, lodLevel-1, cameraPos, frustum, selection)) {
             // child was not in range for higher LOD, add child node's bounding box
             // to selection list at current node's LOD
-            selection.push({ box: child.boundingBox, lod: lodLevel });
+            //selection.push({ box: child.boundingBox, lod: lodLevel });
+            selection.push({ box: child.boundingBox, lod: lodLevel-1 }); // TODO: review this change,  is it really correct to add box at lodLevel-1 ?
           }
         }
       }
