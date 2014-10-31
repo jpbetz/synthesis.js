@@ -1,6 +1,8 @@
 synthesis.js
 =============
 
+<img src="./examples/images/trees.png"  height="150"></img><img src="./examples/images/CDLOD.png" height="150"></img>
+
 Overview
 --------
 
@@ -59,8 +61,15 @@ Design goals
 Core utilities
 ==============
 
+Randomness
+----------
+
+<img src="./examples/images/uniform3d.png" width="80"></img><img src="./examples/images/normal3d.png" width="80"></img><img src="./examples/images/pareto3d.png" width="80"></img>
+
 Consistent Noise
 ----------------
+
+<img src="./examples/images/simplex.png" width="80"></img><img src="./examples/images/worley1.png" width="80"></img><img src="./examples/images/worley2.png" width="80"></img><img src="./examples/images/worley-coloring.png" width="80"></img>
 
 Simplex provides a consistent noise source, which can be used to generate random terrain height maps
 or surface textures.
@@ -74,11 +83,15 @@ random starting coordinate before sampling.
 L-Systems
 --------
 
+<img src="./examples/images/trees.png" width="400"></img>
+
 Generates random trees using a stochastic L-System and renders them using
 WebGL and three.js.
 
 Marching Cubes
 --------------
+
+<img src="./examples/images/marching-cubes.png" width="400"></img>
 
 Marching cubes can create a mesh from a scalar field.   It has many applications,
 and is a powerful tool in the procedural generation toolbox.  It can, for example,
@@ -89,15 +102,25 @@ Color
 
 Add basic routines, start with: http://blog.noctua-software.com/procedural-colors-for-game.html
 
-Examples
---------
 
-For an example l-system, see examples/trees.html
+Heightmap Level-of-Detail Rendering
+-----------------------------------
+<img src="./examples/images/CDLOD.png" width="600"></img>
 
+CDLOD can render large heightmaps with high detail
+for portions of the heighmap near the camera and
+low detail for portions far away from the camera.
+Allowing for very large scenes to be efficiently
+rendered.  Morphing is used to smoothly transition
+level of detail as the camera moves around the scene,  and a 3D distance based detail calculation
+make means this approach works well even when
+the camera is far from the height map,  such
+as far above it.  It could, for example,  be
+used to render a planet from space, and support
+continuous zoom all the way down to the surface.
 
-TODO:
-
-* [ ] Fix artifact in LOD rendering.
+TODO
+----
 
 * [ ] Clean up shader code.
 * [ ] Make separate material for CDLOD.
