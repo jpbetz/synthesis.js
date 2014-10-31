@@ -2,6 +2,7 @@
  * Provides:
  *   - view frustum culling of terrain data.
  *   - Level of detail (LOD)
+ *   - automatic construction via subdivide, or manual construction by assigning children nodes
  */
 
 /**
