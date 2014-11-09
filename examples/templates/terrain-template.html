@@ -9,8 +9,11 @@
 
     <script src="js/OrbitControls.js"></script>
 
-    <script src="../src/shaders/noise3D_fragment.glsl" id="noise3D_vertex" type="x-shader/x-vertex">@{noise3Dglsl_vertex}@</script>
-    <script src="../src/shaders/noise3D_vertex.glsl" id="noise3D_fragment" type="x-shader/x-fragment">@{noise3Dglsl_fragment}@</script>
+    <script id="lod_vertex" type="x-shader/x-vertex">@{lod_vertex}@</script>
+    <script id="lod_fragment" type="x-shader/x-fragment">@{lod_fragment}@</script>
+    <script id="lighting" type="x-shader/x-fragment">@{lighting}@</script>
+    <script id="simplex_noise" type="x-shader/x-fragment">@{simplex_noise}@</script>
+    <script id="level_of_detail" type="x-shader/x-fragment">@{level_of_detail}@</script>
 
     <script>
       var scene = new THREE.Scene();

@@ -1,7 +1,14 @@
 ShaderNoiseMaterial = function(params) {
 
-  var vertexShader = document.getElementById('noise3D_vertex').innerHTML;
-  var fragmentShader = document.getElementById('noise3D_fragment').innerHTML;
+  var lightingShaderLib = document.getElementById('lighting').innerHTML;
+  var lodShaderLib = document.getElementById('level_of_detail').innerHTML;
+  var simplexShaderLib = document.getElementById('simplex_noise').innerHTML;
+
+  var vertexShaderMain = document.getElementById('lod_vertex').innerHTML;
+  var fragmentShaderMain = document.getElementById('lod_fragment').innerHTML;
+
+  var vertexShader = lightingShaderLib + "\n" + lodShaderLib + "\n" + simplexShaderLib + "\n" + vertexShaderMain;
+  var fragmentShader = fragmentShaderMain;
 
   var defaultGradient = new Gradient([
     {'x': 0, 'color': new THREE.Color(0,0,0)},

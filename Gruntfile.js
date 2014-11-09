@@ -46,8 +46,11 @@ module.exports = function(grunt) {
           prefix: '@{',
           suffix: '}@',
           vars: {
-            'noise3Dglsl_vertex': '<%= grunt.file.read("src/shaders/noise3D_vertex.glsl") %>',
-            'noise3Dglsl_fragment': '<%= grunt.file.read("src/shaders/noise3D_fragment.glsl") %>'
+            'lod_vertex': '<%= grunt.file.read("src/shaders/lod_vertex.glsl") %>',
+            'lod_fragment': '<%= grunt.file.read("src/shaders/lod_fragment.glsl") %>',
+            'lighting': '<%= grunt.file.read("src/shaders/lighting.glsl") %>',
+            'level_of_detail': '<%= grunt.file.read("src/shaders/level_of_detail.glsl") %>',
+            'simplex_noise': '<%= grunt.file.read("src/shaders/simplex_noise.glsl") %>'
           }
         },
         files: {

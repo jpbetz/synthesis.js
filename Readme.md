@@ -157,9 +157,10 @@ Requirements:
 * bower
 
 ```sh
-npm install grunt
-npm install bower
+npm install -g bower
 npm install grunt --save-dev
+npm install grunt
+npm install -g grunt-cli
 ```
 
 ```sh
