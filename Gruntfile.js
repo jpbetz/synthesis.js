@@ -46,15 +46,17 @@ module.exports = function(grunt) {
           prefix: '@{',
           suffix: '}@',
           vars: {
-            'lod_vertex': '<%= grunt.file.read("src/shaders/lod_vertex.glsl") %>',
-            'lod_fragment': '<%= grunt.file.read("src/shaders/lod_fragment.glsl") %>',
             'lighting': '<%= grunt.file.read("src/shaders/lighting.glsl") %>',
             'level_of_detail': '<%= grunt.file.read("src/shaders/level_of_detail.glsl") %>',
-            'simplex_noise': '<%= grunt.file.read("src/shaders/simplex_noise.glsl") %>'
+            'simplex_noise': '<%= grunt.file.read("src/shaders/simplex_noise.glsl") %>',
+
+            'lod_vertex': '<%= grunt.file.read("src/shaders/lod_vertex.glsl") %>',
+            'lod_fragment': '<%= grunt.file.read("src/shaders/lod_fragment.glsl") %>',
+
+            'terrain': '<%= grunt.file.read("examples/js/terrain.js") %>'
           }
         },
         files: {
-          'examples/shader-noise.html': 'examples/templates/shader-noise-template.html',
           'examples/terrain.html': 'examples/templates/terrain-template.html'
         }
       }

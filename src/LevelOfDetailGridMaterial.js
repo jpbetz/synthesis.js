@@ -1,4 +1,4 @@
-ShaderNoiseMaterial = function(params) {
+LevelOfDetailGridMaterial = function(params) {
 
   var lightingShaderLib = document.getElementById('lighting').innerHTML;
   var lodShaderLib = document.getElementById('level_of_detail').innerHTML;
@@ -59,10 +59,10 @@ ShaderNoiseMaterial = function(params) {
   this.needsUpdate = true;
 };
 
-ShaderNoiseMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
+LevelOfDetailGridMaterial.prototype = Object.create( THREE.ShaderMaterial.prototype );
 
-ShaderNoiseMaterial.prototype.clone = function () {
-  var texture = new ShaderNoiseMaterial(params);
+LevelOfDetailGridMaterial.prototype.clone = function () {
+  var texture = new LevelOfDetailGridMaterial(params);
   THREE.ShaderMaterial.prototype.clone.call( this, texture );
   return texture;
 };

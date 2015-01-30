@@ -23,7 +23,7 @@ TerrainRenderer = function(tileSize, levelsOfDetail, gridDimension) {
 
     var quadSize = tileSize*lodMultiplier/this.gridDimension;
 
-    var material = new ShaderNoiseMaterial({
+    var material = new LevelOfDetailGridMaterial({
       octaves: this.octaves,
       sampleScale: this.sampleScale,
       sampleOrigin: this.sampleOrigin,
@@ -37,7 +37,7 @@ TerrainRenderer = function(tileSize, levelsOfDetail, gridDimension) {
 
     var quadSizePartial = tileSize*lodMultiplier/this.gridDimensionPartial;
 
-    var materialPartial = new ShaderNoiseMaterial({
+    var materialPartial = new LevelOfDetailGridMaterial({
       octaves: this.octaves,
       sampleScale: this.sampleScale,
       sampleOrigin: this.sampleOrigin,

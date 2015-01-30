@@ -1,4 +1,6 @@
 // TODO: add attenuation
+// TODO: use colors
+// TODO: add specularity
 
 struct PointLight {
   vec3 worldPosition;
